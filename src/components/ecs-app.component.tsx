@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
-import { getOrCreateDefaultWorld } from "../index";
+import { getOrCreateDefaultWorld } from "../modules/Entities/World";
 import { ArchitectureActorType } from "../model/architecture";
 import { ApolloProvider } from "@apollo/client";
 

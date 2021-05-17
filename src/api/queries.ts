@@ -1,16 +1,24 @@
-import { Cue } from '../scripting/Cue'
-import { Base64 } from 'js-base64';
-import { CrudEventActionIntent } from './events'
+import { Base64 } from "js-base64";
+import { CrudEventActionIntent } from "./events";
+
+interface Cue {
+  _guid: string;
+  name: string;
+  timestamp: number;
+  receiverGuid: string;
+  payload?: string;
+}
 
 export function queryTemplate(
   gitLabProjectId: number,
-  bodyTemplate: string): string {
+  bodyTemplate: string
+): string {
   return `
     query {
         uxmData(repositoryId: ${gitLabProjectId})
         ${bodyTemplate}
       } 
-    `
+    `;
 }
 
 export function personasQueryBodyTemplate() {
@@ -20,7 +28,7 @@ export function personasQueryBodyTemplate() {
       _guid
     }
   }
-  `
+  `;
 }
 
 export function scriptsQueryBodyTemplate() {
@@ -35,7 +43,7 @@ export function scriptsQueryBodyTemplate() {
       }
     }
   }
-  `
+  `;
 }
 
 export function scriptsWithLocalCuesQueryBodyTemplate() {
@@ -46,7 +54,7 @@ export function scriptsWithLocalCuesQueryBodyTemplate() {
       cues @client
     }
   }
-  `
+  `;
 }
 
 // const clearAll = () => {
@@ -75,8 +83,8 @@ export function scriptQueryCueBodyTemplate(
   scriptGuid: string,
   scriptActionIntent: CrudEventActionIntent,
   cues: Cue[],
-  cueActionIntent: CrudEventActionIntent | undefined): string {
-
+  cueActionIntent: CrudEventActionIntent | undefined
+): string {
   let cuesString = "";
   cues.forEach((cue) => {
     cuesString += `
@@ -87,7 +95,7 @@ export function scriptQueryCueBodyTemplate(
         timestamp: ${cue.timestamp}
         action: ${cueActionIntent}
       }`;
-  })
+  });
 
   return `
     {
@@ -100,11 +108,23 @@ export function scriptQueryCueBodyTemplate(
                 ]
             }
         ]
-    }`
+    }`;
 }
 
-export function scriptCreateQueryBodyTemplate
-  (scriptGuid: string) { return scriptQueryCueBodyTemplate(scriptGuid, CrudEventActionIntent.CREATE, [], undefined); }
+export function scriptCreateQueryBodyTemplate(scriptGuid: string) {
+  return scriptQueryCueBodyTemplate(
+    scriptGuid,
+    CrudEventActionIntent.CREATE,
+    [],
+    undefined
+  );
+}
 
-export function scriptAddCueQueryBodyTemplate
-  (scriptGuid: string, cue: Cue) { return scriptQueryCueBodyTemplate(scriptGuid, CrudEventActionIntent.UPDATE, [cue], CrudEventActionIntent.CREATE) }
+export function scriptAddCueQueryBodyTemplate(scriptGuid: string, cue: Cue) {
+  return scriptQueryCueBodyTemplate(
+    scriptGuid,
+    CrudEventActionIntent.UPDATE,
+    [cue],
+    CrudEventActionIntent.CREATE
+  );
+}

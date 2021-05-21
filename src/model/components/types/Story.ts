@@ -1,4 +1,4 @@
-import { ComponentType, IComponent } from "../../components";
+import { ComponentType, IComponent } from "..";
 
 export interface StoryInputProps {
   guid: string;

@@ -1,4 +1,4 @@
-import { IComponent, ComponentType } from "../../components";
+import { IComponent, ComponentType } from "..";
 
 export interface TagInputProps {
   guid: string;

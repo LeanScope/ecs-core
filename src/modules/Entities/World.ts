@@ -4,23 +4,23 @@ import { World, WorldCreationProps } from "../../model/entities";
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
 import { SystemContext, SystemEvent, SystemGroup } from "../../model/systems";
-import { createStateMachineService } from "../StateMachine";
+import { createStateMachineService } from "../stateMachine";
 import {
   createComponentSystemGroup,
   createInteractionSystemGroup,
-} from "../Systems/SystemGroups";
-import { createEntityManager } from "../Entities/EntityManager";
+} from "../systems";
+import { createEntityManager } from "./entityManager";
 import {
   addSystemToUpdateList,
   createInteractionSystem,
   createComponentSystem,
   createWelcomeParticipantsStorySystem,
   createInputSystem,
-} from "../Systems/Systems";
+} from "../systems";
 
 let defaultWorld: World | undefined = undefined;
 export function getOrCreateDefaultWorld(props: WorldCreationProps): World {
-  if (defaultWorld) {
+  if (defaultWorld && !props.forceNew) {
     return defaultWorld;
   }
   const type = ArchitectureActorType.World;

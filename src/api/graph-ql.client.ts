@@ -1,19 +1,20 @@
+import "cross-fetch/polyfill";
 import { createHttpLink } from "apollo-link-http";
-import { split } from 'apollo-link';
+import { split } from "apollo-link";
 import { setContext } from "apollo-link-context";
-import { WebSocketLink } from 'apollo-link-ws';
-import { getMainDefinition } from 'apollo-utilities';
+import { WebSocketLink } from "apollo-link-ws";
+import { getMainDefinition } from "apollo-utilities";
 
-const httpLink = createHttpLink({ 
-  uri: 'https://dev.api.leanscope.io/graphql'
+const httpLink = createHttpLink({
+  uri: "https://dev.api.leanscope.io/graphql",
 });
 
 // Create a WebSocket link:
 const websocketLink = new WebSocketLink({
   uri: `wss://dev.api.leanscope.io/graphql`,
   options: {
-    reconnect: true
-  }
+    reconnect: true,
+  },
 });
 
 // using the ability to split links, you can send data to each link
@@ -22,10 +23,13 @@ export const link = split(
   // split based on operation type
   ({ query }) => {
     const operationDefNode = getMainDefinition(query);
-    return operationDefNode.kind === 'OperationDefinition' && operationDefNode.operation === 'subscription';
+    return (
+      operationDefNode.kind === "OperationDefinition" &&
+      operationDefNode.operation === "subscription"
+    );
   },
   websocketLink,
-  httpLink,
+  httpLink
 );
 
 export const authLink: any = setContext((_, { headers }) => {

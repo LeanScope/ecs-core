@@ -17,14 +17,14 @@ import {
 } from "../../model/systems";
 import * as _ from "lodash";
 import { TransitionActionName } from "../../model/TransitionActionName";
-import { EntityGuids, EntityNames } from "../../api/entities";
-import { createStateMachineService } from "../StateMachine";
-import { getEntityQueryFromDesc } from "../Entities/EntityQueries";
+import { EntityGuids, EntityNames } from "../../api/Entities";
+import { createStateMachineService } from "../stateMachine";
+import { getEntityQueryFromDesc } from "../entities";
 import {
   addComponentsToEntitiesByQuery,
   createEntity,
   toEntitiesArray,
-} from "../Entities/Entities";
+} from "../entities";
 import {
   Pointer,
   getComponentData,
@@ -36,7 +36,7 @@ import {
   User,
   Tag,
   inputActionMapJson,
-} from "../Components";
+} from "../components";
 
 export function addSystemToUpdateList(props: {
   group: SystemGroup;

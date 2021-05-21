@@ -18,8 +18,10 @@ import {
   EntityDescription,
   toEntitiesArray,
   setEntitiesArray,
-} from "../Entities/Entities";
-import { createStateMachineService } from "../StateMachine";
+} from "./entities";
+import { createStateMachineService } from "../stateMachine";
+import { allowedNodeEnvironmentFlags } from "process";
+import { Component } from "react";
 
 export function getEntityQueryFromDesc(
   props: EntityQueryFromDescProps
@@ -211,11 +213,22 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
     const filteredEntities: typeof entities = [];
     entities.forEach((entity) => {
       let addEntity = false;
+      const queryDescAllClone = props.queryDesc.all
+        ? [...props.queryDesc.all]
+        : undefined;
+
       entity.components.forEach((component) => {
+        if (queryDescAllClone !== undefined) {
+          const index = queryDescAllClone.indexOf(component.type);
+          if (index >= 0) {
+            queryDescAllClone.splice(index, 1);
+          }
+          addEntity = queryDescAllClone.length === 0;
+        }
         if (
-          props.queryDesc.all === undefined ||
-          props.queryDesc.all.length === 0 ||
-          props.queryDesc.all.indexOf(component.type) >= 0
+          props.queryDesc.any === undefined ||
+          props.queryDesc.any.length === 0 ||
+          props.queryDesc.any.indexOf(component.type) >= 0
         ) {
           addEntity = true;
         }
@@ -227,7 +240,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
         }
       });
 
-      if (addEntity) {
+      if (addEntity && (!queryDescAllClone || queryDescAllClone.length === 0)) {
         filteredEntities.push(entity);
       }
     });

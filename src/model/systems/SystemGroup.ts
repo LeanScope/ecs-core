@@ -1,6 +1,6 @@
 import { Interpreter } from "xstate";
 import { FunctionInputProps } from "../FunctionInputProps";
-import { System, SystemContext, SystemEvent } from "../systems";
+import { System, SystemContext, SystemEvent } from ".";
 
 export interface SystemGroup<T = any> extends FunctionInputProps {
   type: T;

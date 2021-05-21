@@ -22,7 +22,7 @@ import {
 import { Entity } from "../model/entities";
 import { EventType } from "../model/EventType";
 import { Key } from "ts-keycode-enum";
-import { toEntitiesArray, setEntitiesArray } from "./Entities/Entities";
+import { toEntitiesArray, setEntitiesArray } from "./entities";
 
 let pointerId = 0;
 

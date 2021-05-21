@@ -1,15 +1,12 @@
-import * as entityApi from "./modules/Entities";
-import * as componentsApi from "./modules/Components";
-import * as systemsApi from "./modules/Systems";
-import { ECSApp } from "./components/ecs-app.component";
+import * as entityApi from "./modules/entities";
+import * as componentsApi from "./modules/components";
+import * as systemsApi from "./modules/systems";
 
-export * from "./modules/Entities";
-export * from "./modules/Components";
-export * from "./modules/Systems";
-export * from "./components/ecs-app.component";
+export * from "./modules/entities";
+export * from "./modules/components";
+export * from "./modules/systems";
 
 export default {
-  ECSApp,
   ...entityApi,
   ...componentsApi,
   ...systemsApi,

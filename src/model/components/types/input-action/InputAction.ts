@@ -1,4 +1,4 @@
-import { IComponent, ComponentType } from "../../../components";
+import { IComponent, ComponentType } from "../..";
 import { InputActionCreationProps } from "./InputActionCreation";
 
 export interface InputActionComponent

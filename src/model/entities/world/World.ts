@@ -1,5 +1,5 @@
 import { Interpreter } from "xstate";
-import { EntityManager } from "../";
+import { EntityManager } from "..";
 import { SystemContext, SystemEvent, SystemGroup } from "../../systems";
 import { WorldCreationProps } from "./WorldCreationProps";
 

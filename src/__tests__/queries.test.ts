@@ -9,7 +9,7 @@ import {
   toEntitiesArray,
 } from "../modules/entities";
 
-interface TestComponent extends IComponent, ComponentType {
+interface TestComponent extends IComponent {
   testString: string;
   testNumber: number;
   testBoolean: boolean;

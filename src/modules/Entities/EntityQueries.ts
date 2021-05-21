@@ -18,8 +18,8 @@ import {
   EntityDescription,
   toEntitiesArray,
   setEntitiesArray,
-} from "./entities";
-import { createStateMachineService } from "../stateMachine";
+} from "./Entities";
+import { createStateMachineService } from "../StateMachine";
 import { allowedNodeEnvironmentFlags } from "process";
 import { Component } from "react";
 

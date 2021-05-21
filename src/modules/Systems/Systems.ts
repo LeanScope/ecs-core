@@ -18,7 +18,7 @@ import {
 import * as _ from "lodash";
 import { TransitionActionName } from "../../model/TransitionActionName";
 import { EntityGuids, EntityNames } from "../../api/Entities";
-import { createStateMachineService } from "../stateMachine";
+import { createStateMachineService } from "../StateMachine";
 import { getEntityQueryFromDesc } from "../entities";
 import {
   addComponentsToEntitiesByQuery,
@@ -36,7 +36,7 @@ import {
   User,
   Tag,
   inputActionMapJson,
-} from "../components";
+} from "../Components";
 
 export function addSystemToUpdateList(props: {
   group: SystemGroup;

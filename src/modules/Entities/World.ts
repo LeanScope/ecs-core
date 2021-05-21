@@ -4,12 +4,12 @@ import { World, WorldCreationProps } from "../../model/entities";
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
 import { SystemContext, SystemEvent, SystemGroup } from "../../model/systems";
-import { createStateMachineService } from "../stateMachine";
+import { createStateMachineService } from "../StateMachine";
 import {
   createComponentSystemGroup,
   createInteractionSystemGroup,
 } from "../systems";
-import { createEntityManager } from "./entityManager";
+import { createEntityManager } from "./EntityManager";
 import {
   addSystemToUpdateList,
   createInteractionSystem,

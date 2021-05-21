@@ -2,7 +2,7 @@ import { Machine } from "xstate";
 import { EntityManager } from "../../model/entities";
 import { SystemContext, SystemEvent } from "../../model/systems";
 import { TransitionActionName } from "../../model/TransitionActionName";
-import { createSystemMachineConfig } from "../../modules/systems/systems";
+import { createSystemMachineConfig } from "../../modules/systems/Systems";
 
 export const createLayoutSystem = (props: {
   callerId: string;

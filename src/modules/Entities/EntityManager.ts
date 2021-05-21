@@ -10,8 +10,8 @@ import {
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
 import { authLink, link } from "../../api/Graph-ql.client";
-import { createStateMachineService } from "../stateMachine";
-import { createUniversalEntityQuery } from "./entityQueries";
+import { createStateMachineService } from "../StateMachine";
+import { createUniversalEntityQuery } from "./EntityQueries";
 
 export function createEntityManager(
   props: CreateEntityManagerInputProps

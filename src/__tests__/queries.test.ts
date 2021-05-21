@@ -15,7 +15,7 @@ interface TestComponent extends IComponent {
   testBoolean: boolean;
 }
 
-describe("Test Queries", () => {
+describe("Test various Entity Queries", () => {
   let world: World;
 
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe("Test Queries", () => {
     world = undefined;
   });
 
-  it("Query all components", () => {
+  it("Should query all entities", () => {
     for (let i = 0; i < 10; i++) {
       createEntity({
         entityManager: world.entityManager,
@@ -56,7 +56,7 @@ describe("Test Queries", () => {
     }
   });
 
-  it("Query all with specific component", () => {
+  it("Should query all entities with a specific component", () => {
     createEntityComponentsExample(world);
 
     for (let i = 1; i <= 4; i++) {
@@ -79,7 +79,7 @@ describe("Test Queries", () => {
     }
   });
 
-  it("Query with non-existant component type", () => {
+  it("Should query entities with non-existant component type", () => {
     createEntityComponentsExample(world);
 
     let query = getEntityQueryFromDesc({
@@ -96,7 +96,7 @@ describe("Test Queries", () => {
     expect(entities.length).toBe(0);
   });
 
-  it("Query all entities with specific component archetype", () => {
+  it("Should query all entities with specific component archetype", () => {
     createEntityComponentsExample(world);
 
     let query = getEntityQueryFromDesc({
@@ -146,11 +146,11 @@ describe("Test Queries", () => {
     expect(entities[0].components).toContainEqual({ type: "B" });
   });
 
-  /*  it("Query all without specific component", () => {});
+  /*  it("Should query all entities without a specific component", () => {});
 
-  it("Query all without specific component archetype", () => {});
+  it("Should query all entities without a specific component archetype", () => {});
 
-  it("Query all with any specific component", () => {}); */
+  it("Should query all entities with any of various component", () => {}); */
 });
 
 function createEntityComponentsExample(world: World) {

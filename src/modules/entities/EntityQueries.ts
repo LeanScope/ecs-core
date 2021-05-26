@@ -50,9 +50,9 @@ export function createUniversalEntityQuery(
         .then((response) => {
           const data = response.data;
           // todo: beat anne
-          const equipments = data.uxmData.equipments;
+          const equipments: Equipment[] = data.uxmData.equipments;
           let entities: Entity[] = [];
-          equipments.forEach((equipment: Equipment) => {
+          for (let equipment of equipments) {
             const entity = {
               _guid: equipment._guid,
               components: [
@@ -63,7 +63,7 @@ export function createUniversalEntityQuery(
               ],
             };
             entities.push(entity);
-          });
+          }
           return resolve({
             callerId: event.callerId,
             entities: entities,
@@ -212,37 +212,48 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
 
     const filteredEntities: typeof entities = [];
     for (let entity of entities) {
-      let addEntity = false;
+      let isAllFulfilled =
+        props.queryDesc.all === undefined || props.queryDesc.all.length === 0;
+      let isAnyFulfilled =
+        props.queryDesc.any === undefined || props.queryDesc.any.length === 0;
+      let isNoneFulfilled = true;
+
       const queryDescAllClone = props.queryDesc.all
         ? [...props.queryDesc.all]
         : undefined;
 
       for (let component of entity.components) {
-        if (queryDescAllClone !== undefined) {
+        if (queryDescAllClone) {
           for (let i = 0; i < queryDescAllClone.length; i++) {
             if (queryDescAllClone[i].type === component.type) {
               queryDescAllClone.splice(i, 1);
-              addEntity = queryDescAllClone.length === 0;
+              isAllFulfilled = queryDescAllClone.length === 0;
               break;
             }
           }
         }
-        if (
-          props.queryDesc.any === undefined ||
-          props.queryDesc.any.length === 0 ||
-          props.queryDesc.any.indexOf(component.type) >= 0
-        ) {
-          addEntity = true;
+
+        if (props.queryDesc.any && !isAnyFulfilled) {
+          for (let anyDesc of props.queryDesc.any) {
+            if (anyDesc.type === component.type) {
+              isAnyFulfilled = true;
+              break;
+            }
+          }
         }
-        if (
-          props.queryDesc.none !== undefined &&
-          props.queryDesc.none.indexOf(component.type) >= 0
-        ) {
-          addEntity = false;
+
+        if (props.queryDesc.none && isNoneFulfilled) {
+          for (let noneDesc of props.queryDesc.none) {
+            if (noneDesc.type === component.type) {
+              isNoneFulfilled = false;
+              break;
+            }
+          }
+          if (isNoneFulfilled === false) break;
         }
       }
 
-      if (addEntity && (!queryDescAllClone || queryDescAllClone.length === 0)) {
+      if (isAllFulfilled && isAnyFulfilled && isNoneFulfilled) {
         filteredEntities.push(entity);
       }
     }
@@ -278,7 +289,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
                     entityQuery: props.universalEntityQuery,
                   });
                   const mergedEntities: typeof allEntities = [];
-                  allEntities.forEach((existingEntity) => {
+                  for (let existingEntity of allEntities) {
                     const newEntity = event.entities.find(
                       (newEntity) => newEntity._guid === existingEntity._guid
                     );
@@ -287,7 +298,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
                     } else {
                       mergedEntities.push(existingEntity);
                     }
-                  });
+                  }
                   setEntitiesArray({
                     callerId: event.callerId,
                     entityQuery: props.universalEntityQuery,

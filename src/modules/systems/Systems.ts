@@ -273,8 +273,8 @@ export function createInputSystem(props: SystemCreationProps): System {
           ) as InputActionMapComponent;
           const inputActions = Object.values(newInputActionMap.entries);
 
-          inputActions.forEach((inputAction) => {
-            inputAction?.bindings.forEach((binding) => {
+          for (let inputAction of inputActions) {
+            for (let binding of inputAction?.bindings) {
               const key = binding.path.split("#")[1];
               const triggeredAction = createTriggeredInputAction(
                 inputAction,
@@ -284,8 +284,8 @@ export function createInputSystem(props: SystemCreationProps): System {
               if (triggeredAction.isTriggered && triggeredAction.isEnabled) {
                 triggeredAction.onTrigger();
               }
-            });
-          });
+            }
+          }
 
           setComponentData({
             callerId: props.callerId,

@@ -34,14 +34,14 @@ export function createDefaultWorld(props: WorldCreationProps): World {
             target: StateName.initializing,
             actions: [
               (_context, event) => {
-                systemGroups.forEach((systemGroup) => {
-                  systemGroup.systems.forEach((system) => {
+                for (let systemGroup of systemGroups) {
+                  for (let system of systemGroup.systems) {
                     system.service.send({
                       type: EventType.START_RUN_SYSTEM,
                       callerId: type,
                     });
-                  });
-                });
+                  }
+                }
               },
             ],
           },
@@ -66,14 +66,14 @@ export function createDefaultWorld(props: WorldCreationProps): World {
       updating: {
         entry: [
           (_context, event) => {
-            systemGroups.forEach((systemGroup) => {
-              systemGroup.systems.forEach((system) => {
+            for (let systemGroup of systemGroups) {
+              for (let system of systemGroup.systems) {
                 system.service.send({
                   type: EventType.START_UPDATE_SYSTEM,
                   callerId: type,
                 });
-              });
-            });
+              }
+            }
           },
           send({ type: EventType.FINISH_UPDATE_SYSTEM, callerId: type }),
         ],
@@ -82,14 +82,14 @@ export function createDefaultWorld(props: WorldCreationProps): World {
             target: StateName.running,
             actions: [
               (_context, event) => {
-                systemGroups.forEach((systemGroup) => {
-                  systemGroup.systems.forEach((system) => {
+                for (let systemGroup of systemGroups) {
+                  for (let system of systemGroup.systems) {
                     system.service.send({
                       type: EventType.FINISH_UPDATE_SYSTEM,
                       callerId: type,
                     });
-                  });
-                });
+                  }
+                }
               },
             ],
           },

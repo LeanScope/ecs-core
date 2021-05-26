@@ -157,19 +157,19 @@ export function setComponentData<T extends IComponentType>(
     entityQuery: props.entityManager.universalEntityQuery,
   });
   const newEntities = new Array<Entity>();
-  currentEntities.forEach((entity) => {
+  for (let entity of currentEntities) {
     if (entity._guid === props.entity._guid) {
       const newComponents: IComponent[] = [];
 
       let modified = false;
-      entity.components.forEach((component) => {
+      for (let component of entity.components) {
         if (component.type === props.componentData.type) {
           newComponents.push(props.componentData);
           modified = true;
         } else {
           newComponents.push(component);
         }
-      });
+      }
 
       if (!modified) {
         newComponents.push(props.componentData);
@@ -186,7 +186,7 @@ export function setComponentData<T extends IComponentType>(
     } else {
       newEntities.push(entity);
     }
-  });
+  }
 
   setEntitiesArray({
     callerId: props.callerId,

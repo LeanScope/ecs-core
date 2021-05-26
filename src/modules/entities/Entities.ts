@@ -146,21 +146,15 @@ export function addComponentsToEntities(
 ): AddComponentsOutputProps {
   const currentEntities = props.entities;
 
-  const newEntities = [...currentEntities];
+  const newEntities: Entity[] = [];
 
-  currentEntities.forEach((currentEntity) => {
+  for (let currentEntity of currentEntities) {
     const currentComponents = currentEntity.components;
-    const newComponents = [...currentComponents, ...props.components];
-
-    newEntities.forEach((newEntity: Entity, index) => {
-      if (newEntity._guid === currentEntity._guid) {
-        newEntities[index] = {
-          _guid: currentEntity._guid,
-          components: newComponents,
-        };
-      }
+    newEntities.push({
+      _guid: currentEntity._guid,
+      components: [...currentComponents, ...props.components],
     });
-  });
+  }
 
   return {
     entities: newEntities,

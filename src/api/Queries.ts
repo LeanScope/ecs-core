@@ -86,7 +86,7 @@ export function scriptQueryCueBodyTemplate(
   cueActionIntent: CrudEventActionIntent | undefined
 ): string {
   let cuesString = "";
-  cues.forEach((cue) => {
+  for (let cue of cues) {
     cuesString += `
       {
         _guid: "${cue._guid}"
@@ -95,7 +95,7 @@ export function scriptQueryCueBodyTemplate(
         timestamp: ${cue.timestamp}
         action: ${cueActionIntent}
       }`;
-  });
+  }
 
   return `
     {

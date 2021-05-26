@@ -3,7 +3,11 @@ import { ArchitectureActorType } from "../../model/architecture";
 import {
   ComponentType,
   InputActionMapComponent,
+  InputActionMapComponentType,
   InputActionName,
+  PointerComponentType,
+  UserComponentType,
+  UserInterfaceComponentType,
 } from "../../model/components";
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
@@ -155,7 +159,7 @@ export function createCollaborationSystem(props: SystemCreationProps): System {
   const entityQuery = getEntityQueryFromDesc({
     callerId: type,
     entityManager: entityManager,
-    queryDesc: { all: [ComponentType.USER], none: [ComponentType.POINTER] },
+    queryDesc: { all: [UserComponentType], none: [PointerComponentType] },
   });
 
   const machine = Machine<SystemContext, any, SystemEvent>(
@@ -194,13 +198,13 @@ export function createInputSystem(props: SystemCreationProps): System {
   const entityQuery = getEntityQueryFromDesc({
     callerId: type,
     entityManager: props.entityManager,
-    queryDesc: { all: [ComponentType.USER] },
+    queryDesc: { all: [UserComponentType] },
   });
 
   const inputActionMapQuery = getEntityQueryFromDesc({
     callerId: type,
     entityManager: props.entityManager,
-    queryDesc: { all: [ComponentType.INPUT_ACTION_MAP] },
+    queryDesc: { all: [InputActionMapComponentType] },
   });
 
   let x = -1;
@@ -351,7 +355,7 @@ export function createWelcomeParticipantsStorySystem(
   const uiEntityQuery = getEntityQueryFromDesc({
     callerId: type,
     entityManager: props.entityManager,
-    queryDesc: { all: [ComponentType.USER_INTERFACE] },
+    queryDesc: { all: [UserInterfaceComponentType] },
   });
 
   const machine = Machine<SystemContext, any, SystemEvent>(

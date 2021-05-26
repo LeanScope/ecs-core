@@ -1,6 +1,6 @@
 import { Interpreter } from "xstate";
 import { EntityManager } from ".";
-import { ComponentType } from "../components";
+import { IComponentType } from "../components";
 import { Entity } from "./Entity";
 import { EventType } from "../EventType";
 import { FunctionInputProps } from "../FunctionInputProps";
@@ -25,9 +25,9 @@ export interface EntityQueryContext {
 }
 
 export interface EntityQueryDesc {
-  all?: ComponentType[];
-  any?: ComponentType[];
-  none?: ComponentType[];
+  all?: IComponentType[];
+  any?: IComponentType[];
+  none?: IComponentType[];
 }
 
 export interface EntityQueryBase {

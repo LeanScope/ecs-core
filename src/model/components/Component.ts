@@ -1,5 +1,3 @@
 import { ComponentType } from "./types/ComponentType";
 
-export interface IComponent<T extends ComponentType = any> {
-  type: T;
-}
+export interface IComponent extends ComponentType<any> {}

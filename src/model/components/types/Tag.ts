@@ -1,10 +1,10 @@
-import { IComponent, ComponentType } from "..";
+import { IComponent, IComponentType } from "..";
+
+export const TagComponentType: IComponentType = { type: "TAG" };
 
 export interface TagInputProps {
   guid: string;
   name: string;
 }
 
-export interface TagOutputProps
-  extends TagInputProps,
-    IComponent<ComponentType.TAG> {}
+export interface TagComponent extends TagInputProps, IComponent {}

@@ -9,5 +9,4 @@ export interface WorldCreationProps extends FunctionInputProps {
   solutionSpace: {
     gitLabProjectId: number;
   };
-  forceNew?: boolean;
 }

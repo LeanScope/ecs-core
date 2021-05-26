@@ -18,11 +18,7 @@ import {
   createInputSystem,
 } from "../systems";
 
-let defaultWorld: World | undefined = undefined;
-export function getOrCreateDefaultWorld(props: WorldCreationProps): World {
-  if (defaultWorld && !props.forceNew) {
-    return defaultWorld;
-  }
+export function createDefaultWorld(props: WorldCreationProps): World {
   const type = ArchitectureActorType.World;
 
   const callerId = props.name;
@@ -153,7 +149,7 @@ export function getOrCreateDefaultWorld(props: WorldCreationProps): World {
   systemGroups.push(componentSystemGroup);
   systemGroups.push(interactionSystemGroup);
 
-  defaultWorld = {
+  return {
     callerId: callerId,
     name: props.name,
     systemsService: systemsService,
@@ -162,7 +158,13 @@ export function getOrCreateDefaultWorld(props: WorldCreationProps): World {
     solutionSpace: props.solutionSpace,
     entityManager: entityManager,
     systemGroups: systemGroups,
-  };
+  } as World;
+}
 
+let defaultWorld: World | undefined = undefined;
+export function getOrCreateDefaultWorld(props: WorldCreationProps): World {
+  if (!defaultWorld) {
+    defaultWorld = createDefaultWorld(props);
+  }
   return defaultWorld;
 }

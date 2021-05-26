@@ -109,10 +109,10 @@ export function createUniversalEntityQuery(
                       entities: event.entities,
                     },
                   });
-                  console.info(
+                  /* console.info(
                     "Writing entities of universal query: " +
                       JSON.stringify(event.entities)
-                  );
+                  ); */
                   return event.entities;
                 },
               }),
@@ -211,19 +211,21 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
     });
 
     const filteredEntities: typeof entities = [];
-    entities.forEach((entity) => {
+    for (let entity of entities) {
       let addEntity = false;
       const queryDescAllClone = props.queryDesc.all
         ? [...props.queryDesc.all]
         : undefined;
 
-      entity.components.forEach((component) => {
+      for (let component of entity.components) {
         if (queryDescAllClone !== undefined) {
-          const index = queryDescAllClone.indexOf(component.type);
-          if (index >= 0) {
-            queryDescAllClone.splice(index, 1);
+          for (let i = 0; i < queryDescAllClone.length; i++) {
+            if (queryDescAllClone[i].type === component.type) {
+              queryDescAllClone.splice(i, 1);
+              addEntity = queryDescAllClone.length === 0;
+              break;
+            }
           }
-          addEntity = queryDescAllClone.length === 0;
         }
         if (
           props.queryDesc.any === undefined ||
@@ -238,12 +240,12 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
         ) {
           addEntity = false;
         }
-      });
+      }
 
       if (addEntity && (!queryDescAllClone || queryDescAllClone.length === 0)) {
         filteredEntities.push(entity);
       }
-    });
+    }
     return filteredEntities;
   }
 

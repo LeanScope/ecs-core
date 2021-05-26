@@ -3,7 +3,7 @@ import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
 import {
   createEntity,
-  getOrCreateDefaultWorld,
+  createDefaultWorld,
   toEntitiesArray,
 } from "../modules/entities";
 
@@ -11,7 +11,7 @@ describe("Testing Entity functions", () => {
   let world: World;
 
   beforeEach(() => {
-    world = getOrCreateDefaultWorld({
+    world = createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       sessionGuid: uuid(),
@@ -21,7 +21,6 @@ describe("Testing Entity functions", () => {
       solutionSpace: {
         gitLabProjectId: 186,
       },
-      forceNew: true,
     });
   });
 

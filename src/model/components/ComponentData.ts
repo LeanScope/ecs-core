@@ -1,13 +1,11 @@
-import { ComponentType } from ".";
+import { IComponentType, IComponent } from ".";
 import { Entity, EntityManager } from "../entities";
 import { FunctionInputProps } from "../FunctionInputProps";
-import { IComponent } from "./Component";
 
-export interface SetComponentDataInputProps<T extends ComponentType>
-  extends FunctionInputProps {
+export interface SetComponentDataInputProps extends FunctionInputProps {
   entityManager: EntityManager;
   entity: Entity;
-  componentData: IComponent<T>;
+  componentData: IComponent;
 }
 
 export interface SetComponentDataOutputProps {

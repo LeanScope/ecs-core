@@ -1,9 +1,9 @@
-import { ComponentType, IComponent } from "..";
+import { IComponent, IComponentType } from "..";
+
+export const UserComponentType: IComponentType = { type: "USER" };
 
 export interface UserInputProps {
   name: string;
 }
 
-export interface UserOutputProps
-  extends UserInputProps,
-    IComponent<ComponentType.USER> {}
+export interface UserComponent extends UserInputProps, IComponent {}

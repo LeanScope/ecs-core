@@ -1,4 +1,6 @@
-import { IComponent, ComponentType } from "..";
+import { IComponent, IComponentType } from "..";
+
+export const PointerComponentType: IComponentType = { type: "POINTER" };
 
 export interface PointerInputProps {
   id: number;
@@ -6,6 +8,4 @@ export interface PointerInputProps {
   y: number;
 }
 
-export interface PointerOutputProps
-  extends PointerInputProps,
-    IComponent<ComponentType.POINTER> {}
+export interface PointerComponent extends PointerInputProps, IComponent {}

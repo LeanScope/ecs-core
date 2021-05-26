@@ -2,8 +2,8 @@ import { ArchitectureActorType } from "../../model/architecture";
 import {
   AddComponentsInputProps,
   AddComponentsOutputProps,
-  ComponentType,
   IComponent,
+  IComponentType,
 } from "../../model/components";
 import {
   CreateEntityInputProps,
@@ -53,7 +53,7 @@ export const EntityDescription = (
   props: EntityDescriptionInputProps
 ): EntityDescriptionOutputProps => {
   return {
-    type: ComponentType.DESCRIPTION,
+    type: "DESCRIPTION",
     name: props.name,
     description: props.description,
   };
@@ -105,11 +105,11 @@ export const setEntitiesArray = (props: {
   //
 };
 
-export function addComponentsToEntity<T extends ComponentType>(props: {
+export function addComponentsToEntity(props: {
   callerId: string;
   entityManager: EntityManager;
   entity: Entity;
-  components: IComponent<T>[];
+  components: IComponent[];
 }) {
   const newEntities = addComponentsToEntities({
     entities: [props.entity],
@@ -122,10 +122,10 @@ export function addComponentsToEntity<T extends ComponentType>(props: {
   });
 }
 
-export function addComponentsToEntitiesByQuery<T extends ComponentType>(props: {
+export function addComponentsToEntitiesByQuery(props: {
   callerId: string;
   entityQuery: EntityQuery;
-  components: IComponent<T>[];
+  components: IComponent[];
 }) {
   const newEntities = addComponentsToEntities({
     entities: toEntitiesArray({
@@ -141,9 +141,9 @@ export function addComponentsToEntitiesByQuery<T extends ComponentType>(props: {
   });
 }
 
-export function addComponentsToEntities<T extends ComponentType>(
-  props: AddComponentsInputProps<T>
-): AddComponentsOutputProps<T> {
+export function addComponentsToEntities(
+  props: AddComponentsInputProps
+): AddComponentsOutputProps {
   const currentEntities = props.entities;
 
   const newEntities = [...currentEntities];

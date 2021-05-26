@@ -1,12 +1,7 @@
-export enum ComponentType {
-  ALL = "UNDEFINED",
-  PERSONA = "PERSONA",
-  POINTER = "POINTER",
-  TAG = "TAG",
-  STORY = "STORY",
-  USER = "USER",
-  INPUT_ACTION = "INPUT_ACTION",
-  INPUT_ACTION_MAP = "INPUT_ACTION_MAP",
-  USER_INTERFACE = "UI",
-  DESCRIPTION = "DESCRIPTION",
+export interface IComponentType {
+  type: any;
+}
+
+export interface ComponentType<T> extends IComponentType {
+  type: T;
 }

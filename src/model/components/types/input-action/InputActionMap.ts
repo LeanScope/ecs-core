@@ -1,6 +1,14 @@
-import { IComponent, ComponentType } from "../..";
-import { InputActionMapCreationProps } from "./InputActionMapCreation";
+import { IComponent, IComponentType, InputActionComponent } from "../..";
+
+export const InputActionMapComponentType: IComponentType = {
+  type: "INPUT_ACTION_MAP",
+};
+
+export interface InputActionMapCreationProps {
+  name: string;
+  entries: { [name: string]: InputActionComponent };
+}
 
 export interface InputActionMapComponent
   extends InputActionMapCreationProps,
-    IComponent<ComponentType.INPUT_ACTION_MAP> {}
+    IComponent {}

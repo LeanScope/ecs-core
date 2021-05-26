@@ -1,9 +1,10 @@
-import { ComponentType, IComponent } from "..";
+import { IComponentType, IComponent } from "..";
+
+export const StoryComponentType: IComponentType = { type: "STORY" };
 
 export interface StoryInputProps {
   guid: string;
   title: string;
 }
-export interface StoryOutputProps
-  extends StoryInputProps,
-    IComponent<ComponentType.STORY> {}
+
+export interface StoryComponent extends StoryInputProps, IComponent {}

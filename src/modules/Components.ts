@@ -1,5 +1,4 @@
 import {
-  ComponentType,
   IComponent,
   InputActionComponent,
   InputActionCreationProps,
@@ -7,17 +6,18 @@ import {
   InputActionMapCreationProps,
   InputActionName,
   PointerInputProps,
-  PointerOutputProps,
+  PointerComponent,
   SetComponentDataInputProps,
   SetComponentDataOutputProps,
   StoryInputProps,
-  StoryOutputProps,
+  StoryComponent,
   TagInputProps,
-  TagOutputProps,
+  TagComponent,
   UserInputProps,
   UserInterfaceInputProps,
-  UserInterfaceOutputProps,
-  UserOutputProps,
+  UserInterfaceComponent,
+  UserComponent,
+  IComponentType,
 } from "../model/components";
 import { Entity } from "../model/entities";
 import { EventType } from "../model/EventType";
@@ -32,18 +32,18 @@ export const Pointer = (
     x: -1,
     y: -1,
   }
-): PointerOutputProps => {
+): PointerComponent => {
   return {
-    type: ComponentType.POINTER,
+    type: "POINTER",
     id: props.id,
     x: props.x,
     y: props.y,
   };
 };
 
-export const Tag = (props: TagInputProps): TagOutputProps => {
+export const Tag = (props: TagInputProps): TagComponent => {
   return {
-    type: ComponentType.TAG,
+    type: "TAG",
     guid: props.guid,
     name: props.name,
   };
@@ -51,22 +51,22 @@ export const Tag = (props: TagInputProps): TagOutputProps => {
 
 export const UserInterface = (
   props: UserInterfaceInputProps
-): UserInterfaceOutputProps => {
+): UserInterfaceComponent => {
   return {
-    type: ComponentType.USER_INTERFACE,
+    type: "USER_INTERFACE",
   };
 };
 
-export const User = (props: UserInputProps): UserOutputProps => {
+export const User = (props: UserInputProps): UserComponent => {
   return {
-    type: ComponentType.USER,
+    type: "USER",
     name: props.name,
   };
 };
 
-export const Story = (props: StoryInputProps): StoryOutputProps => {
+export const Story = (props: StoryInputProps): StoryComponent => {
   return {
-    type: ComponentType.STORY,
+    type: "STORY",
     guid: props.guid,
     title: props.title,
   };
@@ -86,7 +86,7 @@ export const InputAction = (
   }
 ): InputActionComponent => {
   return {
-    type: ComponentType.INPUT_ACTION,
+    type: "INPUT_ACTION",
     name: props.name,
     isEnabled: props.isEnabled,
     isTriggered: props.isTriggered,
@@ -102,7 +102,7 @@ export const InputActionMap = (
   }
 ): InputActionMapComponent => {
   return {
-    type: ComponentType.INPUT_ACTION_MAP,
+    type: "INPUT_ACTION_MAP",
     name: props.name,
     entries: props.entries,
   };
@@ -110,7 +110,7 @@ export const InputActionMap = (
 
 export const inputActionMapJson = {
   [InputActionName.addParticipant]: {
-    type: ComponentType.INPUT_ACTION,
+    type: "INPUT_ACTION",
     name: InputActionName.addParticipant,
     bindings: [
       {
@@ -130,7 +130,7 @@ export function createInputActionMapFromJson(props: {
   }
 
   const inputActionMap: InputActionMapComponent = {
-    type: ComponentType.INPUT_ACTION_MAP,
+    type: "INPUT_ACTION_MAP",
     name: props.name,
     entries: entries,
   };
@@ -147,8 +147,8 @@ export const createTriggeredInputAction = (
   return result;
 };
 
-export function setComponentData<T extends ComponentType>(
-  props: SetComponentDataInputProps<T>
+export function setComponentData<T extends IComponentType>(
+  props: SetComponentDataInputProps
 ): SetComponentDataOutputProps {
   // @Todo: get rid of the array copying mechanism for the sake of performance
   console.info("setComponentData");
@@ -159,7 +159,7 @@ export function setComponentData<T extends ComponentType>(
   const newEntities = new Array<Entity>();
   currentEntities.forEach((entity) => {
     if (entity._guid === props.entity._guid) {
-      const newComponents = new Array<IComponent<T>>();
+      const newComponents: IComponent[] = [];
 
       let modified = false;
       entity.components.forEach((component) => {

@@ -1,4 +1,4 @@
-import { IComponent, ComponentType } from "../components";
+import { IComponent } from "../components";
 
 export interface EntityDescriptionInputProps {
   name: string;
@@ -6,4 +6,4 @@ export interface EntityDescriptionInputProps {
 }
 export interface EntityDescriptionOutputProps
   extends EntityDescriptionInputProps,
-    IComponent<ComponentType.DESCRIPTION> {}
+    IComponent {}

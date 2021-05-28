@@ -27,6 +27,7 @@ export type EntityManagerEvent =
   | { type: EventType.ENTITIES_READ; callerId?: string }
   | { type: EventType.ENTITIES_CHANGED; callerId?: string }
   | { type: EventType.ENTITIES_WRITTEN; callerId?: string }
+  | { type: EventType.ENTITIES_PERSISTED; callerId?: string }
   | { type: EventType.ENTITY_CREATED; callerId?: string; entity: Entity }
   | { type: EventType.COMPONENT_ADDED; callerId?: string }
   | { type: EventType.COMPONENT_CHANGED; callerId?: string };

@@ -13,6 +13,7 @@ export interface EntityQuery
 export type EntityQueryEvent =
   | { type: EventType.READ_QUERY_ASYNC; callerId?: string }
   | { type: EventType.READ_QUERY_SYNC; callerId?: string }
+  | { type: EventType.ENTITIES_PERSISTED; callerId?: string }
   | {
       type: EventType.WRITE_QUERY_SYNC;
       callerId?: string;

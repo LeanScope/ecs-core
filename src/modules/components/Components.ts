@@ -52,7 +52,7 @@ export function setComponentData<T extends IComponentType>(
   setEntitiesArray({
     callerId: props.callerId,
     entityQuery: props.entityManager.universalEntityQuery,
-    entities: [...newEntities],
+    entities: newEntities,
   });
 
   props.entityManager.entityManagerService.send({

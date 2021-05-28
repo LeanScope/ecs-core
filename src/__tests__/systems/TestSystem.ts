@@ -46,7 +46,7 @@ export function createTestSystem(props: SystemCreationProps): System {
     {
       actions: {
         [TransitionActionName.onStartRunning]: (_context, _event) => {
-          console.log("HERE");
+          console.log('onStartRunning() start');
           const entities = toEntitiesArray({
             callerId: props.callerId,
             entityQuery: entityQuery,
@@ -73,7 +73,10 @@ export function createTestSystem(props: SystemCreationProps): System {
                 testBoolean: false,
               } as TestComponent,
             });
+            console.log('setComponentData() intermediate results: '+props.entityManager.universalEntityQuery.queryService.machine.context.entities);
+
           }
+          console.log('onStartRunning() end with '+props.entityManager.universalEntityQuery.queryService.machine.context.entities);
         },
 
         [TransitionActionName.onUpdate]: (_context, _event) => {

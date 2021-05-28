@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { assign, Machine } from "xstate";
+import { assign, Machine, send } from "xstate";
 import { ArchitectureActorType } from "../../model/architecture";
 import {
   CreateUniversalEntityQueryInputProps,
@@ -99,16 +99,16 @@ export function createUniversalEntityQuery(
             target: StateName.fetchingSolutionSpaceEntities,
           },
           [EventType.WRITE_QUERY_SYNC]: {
-            target: "test",
+            target: "persisting",
             actions: [
               assign({
                 entities: (_context, event) => {
-                  props.apolloClient.writeQuery({
-                    query: gql(props.solutionSpaceQueryString),
-                    data: {
-                      entities: event.entities,
-                    },
-                  });
+                  // props.apolloClient.writeQuery({
+                  //   query: gql(props.solutionSpaceQueryString),
+                  //   data: {
+                  //     entities: event.entities,
+                  //   },
+                  // });
                   /* console.info(
                     "Writing entities of universal query: " +
                       JSON.stringify(event.entities)
@@ -126,7 +126,32 @@ export function createUniversalEntityQuery(
           },
         },
       },
-      test: {},
+      persisting: {
+        entry: [
+          (_context, event: any) => {
+            props.apolloClient.writeQuery({
+              query: gql(props.solutionSpaceQueryString),
+              data: {
+                entities: event.entities,
+              },
+            });
+            /* console.info(
+              "Writing entities of universal query: " +
+                JSON.stringify(event.entities)
+            ); */
+            return event.entities;
+          },
+          send({
+            type: EventType.ENTITIES_PERSISTED,
+            callerId: key,
+          }),
+        ],
+        on: {
+          [EventType.ENTITIES_PERSISTED]: {
+            target: StateName.idle,
+          },
+        }
+      },
       fetchingSolutionSpaceEntities: {
         invoke: {
           id: "fetchingSolutionSpaceEntities",
@@ -193,7 +218,9 @@ export function createUniversalEntityQuery(
 
   const queryService = createStateMachineService(machine);
   queryService.onTransition((state) => {
+    const qs = queryService;
     console.log(state.value);
+    console.log(JSON.stringify(state.context.entities));
   });
 
   return {

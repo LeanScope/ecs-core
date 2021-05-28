@@ -20,8 +20,6 @@ import {
   setEntitiesArray,
 } from "./Entities";
 import { createStateMachineService } from "../StateMachine";
-import { allowedNodeEnvironmentFlags } from "process";
-import { Component } from "react";
 
 export function getEntityQueryFromDesc(
   props: EntityQueryFromDescProps
@@ -99,22 +97,10 @@ export function createUniversalEntityQuery(
             target: StateName.fetchingSolutionSpaceEntities,
           },
           [EventType.WRITE_QUERY_SYNC]: {
-
             target: "persisting",
-
             actions: [
               assign({
                 entities: (_context, event) => {
-                  // props.apolloClient.writeQuery({
-                  //   query: gql(props.solutionSpaceQueryString),
-                  //   data: {
-                  //     entities: event.entities,
-                  //   },
-                  // });
-                  /* console.info(
-                    "Writing entities of universal query: " +
-                      JSON.stringify(event.entities)
-                  ); */
                   return event.entities;
                 },
               }),

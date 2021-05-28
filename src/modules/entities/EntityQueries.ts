@@ -99,7 +99,7 @@ export function createUniversalEntityQuery(
             target: StateName.fetchingSolutionSpaceEntities,
           },
           [EventType.WRITE_QUERY_SYNC]: {
-            target: "test",
+            target: StateName.idle,
             actions: [
               assign({
                 entities: (_context, event) => {
@@ -126,7 +126,6 @@ export function createUniversalEntityQuery(
           },
         },
       },
-      test: {},
       fetchingSolutionSpaceEntities: {
         invoke: {
           id: "fetchingSolutionSpaceEntities",

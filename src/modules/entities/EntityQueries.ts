@@ -99,7 +99,9 @@ export function createUniversalEntityQuery(
             target: StateName.fetchingSolutionSpaceEntities,
           },
           [EventType.WRITE_QUERY_SYNC]: {
+
             target: "persisting",
+
             actions: [
               assign({
                 entities: (_context, event) => {

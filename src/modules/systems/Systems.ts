@@ -132,7 +132,7 @@ export function createSystemMachineConfig(
         on: {
           [EventType.START_UPDATE_SYSTEM]: {
             target: StateName.running,
-            actions: [],
+            actions: [TransitionActionName.onUpdate],
           },
         },
       },

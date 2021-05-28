@@ -97,7 +97,7 @@ export function createUniversalEntityQuery(
             target: StateName.fetchingSolutionSpaceEntities,
           },
           [EventType.WRITE_QUERY_SYNC]: {
-            target: "persisting",
+            target: StateName.persisting,
             actions: [
               assign({
                 entities: (_context, event) => {
@@ -123,10 +123,6 @@ export function createUniversalEntityQuery(
                 entities: event.entities,
               },
             });
-            /* console.info(
-              "Writing entities of universal query: " +
-                JSON.stringify(event.entities)
-            ); */
             return event.entities;
           },
           send({
@@ -290,7 +286,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
       idle: {
         on: {
           [EventType.READ_QUERY_SYNC]: {
-            target: "updating",
+            target: StateName.updating,
             actions: [
               assign({
                 entities: (_context, _event) => {
@@ -300,7 +296,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
             ],
           },
           [EventType.WRITE_QUERY_SYNC]: {
-            target: "updating",
+            target: StateName.updating,
             actions: [
               assign({
                 entities: (_context, event) => {
@@ -337,9 +333,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
         },
       },
       updating: {
-        always: {
-          target: StateName.idle,
-        },
+        always: StateName.idle
       },
     },
   });

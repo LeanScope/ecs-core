@@ -35,7 +35,7 @@ export function createEntityManager(
             target: StateName.updating,
             actions: [
               (context, event) => {
-                console.info("entities written");
+                /*                 console.info("entities written"); */
               },
               (context, event) => {
                 props.systemsService.send({
@@ -50,15 +50,17 @@ export function createEntityManager(
             target: StateName.idle,
             actions: [
               (context, event) => {
-                console.info("Read entities message from " + event.callerId);
+                /*                 console.info("Read entities message from " + event.callerId);
+                 */
               },
               (context, event) => {
-                console.info("entities read");
+                /*                 console.info("entities read");
+                 */
               },
               (context, event) => {
-                console.info(
-                  "Sending update system message through world service"
-                );
+                /*                console.info(
+                   "Sending update system message through world service"
+                 );*/
                 props.systemsService.send({
                   type: EventType.START_UPDATE_SYSTEM,
                   callerId: key,
@@ -71,18 +73,18 @@ export function createEntityManager(
             target: StateName.updating,
             actions: [
               (context, event) => {
-                console.info(
+                /* console.info(
                   "Adding entities changed message from " +
                     ArchitectureActorType.ComponentSystemGroup
-                );
+                ); */
               },
               (context, event) => {
-                console.info("entities changed");
+                /* console.info("entities changed"); */
               },
               (context, event) => {
-                console.info(
+                /* console.info(
                   "Sending update system message through world service"
-                );
+                ); */
                 props.systemsService.send({
                   type: EventType.START_UPDATE_SYSTEM,
                   callerId: key,
@@ -95,7 +97,7 @@ export function createEntityManager(
             target: StateName.updating,
             actions: [
               (context, event) => {
-                console.info("changed component of entity");
+                /* console.info("changed component of entity"); */
               },
             ],
           },
@@ -117,7 +119,7 @@ export function createEntityManager(
             target: StateName.idle,
             actions: [
               (context, event) => {
-                console.info("created entity");
+                /* console.info("created entity"); */
               },
               //(context, event) => props.systemsService.send({ type: EventType.FINISH_UPDATE_SYSTEM, callerId: key })
             ],

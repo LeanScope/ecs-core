@@ -11,11 +11,11 @@ export interface EntityQuery
     EntityQueryBase {}
 
 export type EntityQueryEvent =
-  | { type: EventType.READ_QUERY_ASYNC; callerId: string }
-  | { type: EventType.READ_QUERY_SYNC; callerId: string }
+  | { type: EventType.READ_QUERY_ASYNC; callerId?: string }
+  | { type: EventType.READ_QUERY_SYNC; callerId?: string }
   | {
       type: EventType.WRITE_QUERY_SYNC;
-      callerId: string;
+      callerId?: string;
       entities: Entity[];
       sender?: EntityQuery;
     };

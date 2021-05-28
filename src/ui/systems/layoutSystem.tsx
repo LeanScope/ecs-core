@@ -5,7 +5,7 @@ import { TransitionActionName } from "../../model/TransitionActionName";
 import { createSystemMachineConfig } from "../../modules/systems/Systems";
 
 export const createLayoutSystem = (props: {
-  callerId: string;
+  callerId?: string;
   entityManager: EntityManager;
 }) => {
   //Entity query -> Alle Entities

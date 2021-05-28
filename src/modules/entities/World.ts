@@ -17,9 +17,11 @@ import {
   createWelcomeParticipantsStorySystem,
   createInputSystem,
 } from "../systems";
+import { v4 as uuid } from "uuid";
 
 export function createDefaultWorld(props: WorldCreationProps): World {
   const type = ArchitectureActorType.World;
+  const sessionGuid = uuid();
 
   const callerId = props.name;
   let systemGroups: SystemGroup[] = [];
@@ -99,14 +101,14 @@ export function createDefaultWorld(props: WorldCreationProps): World {
   });
   const systemsService = createStateMachineService(machine);
 
-  let componentSystemGroup = createComponentSystemGroup({
+  /*   let componentSystemGroup = createComponentSystemGroup({
     callerId: callerId,
     systemsService: systemsService,
   });
-  let interactionSystemGroup = createInteractionSystemGroup({
+    let interactionSystemGroup = createInteractionSystemGroup({
     callerId: callerId,
     systemsService: systemsService,
-  });
+  }); */
 
   const entityManager = createEntityManager({
     callerId: callerId,
@@ -114,7 +116,7 @@ export function createDefaultWorld(props: WorldCreationProps): World {
     systemsService: systemsService,
   });
 
-  componentSystemGroup = addSystemToUpdateList({
+  /*   componentSystemGroup = addSystemToUpdateList({
     group: componentSystemGroup,
     system: createComponentSystem({
       callerId: callerId,
@@ -122,7 +124,7 @@ export function createDefaultWorld(props: WorldCreationProps): World {
     }),
   });
 
-  interactionSystemGroup = addSystemToUpdateList({
+    interactionSystemGroup = addSystemToUpdateList({
     group: interactionSystemGroup,
     system: createInteractionSystem({
       callerId: callerId,
@@ -147,13 +149,13 @@ export function createDefaultWorld(props: WorldCreationProps): World {
   });
 
   systemGroups.push(componentSystemGroup);
-  systemGroups.push(interactionSystemGroup);
+    systemGroups.push(interactionSystemGroup); */
 
   return {
     callerId: callerId,
     name: props.name,
     systemsService: systemsService,
-    sessionGuid: props.sessionGuid,
+    sessionGuid: sessionGuid,
     problemSpace: props.problemSpace,
     solutionSpace: props.solutionSpace,
     entityManager: entityManager,

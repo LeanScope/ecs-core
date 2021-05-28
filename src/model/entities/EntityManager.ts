@@ -24,12 +24,12 @@ export interface CreateEntityManagerInputProps extends FunctionInputProps {
 
 // The events that the machine handles
 export type EntityManagerEvent =
-  | { type: EventType.ENTITIES_READ; callerId: string }
-  | { type: EventType.ENTITIES_CHANGED; callerId: string }
-  | { type: EventType.ENTITIES_WRITTEN; callerId: string }
-  | { type: EventType.ENTITY_CREATED; callerId: string; entity: Entity }
-  | { type: EventType.COMPONENT_ADDED; callerId: string }
-  | { type: EventType.COMPONENT_CHANGED; callerId: string };
+  | { type: EventType.ENTITIES_READ; callerId?: string }
+  | { type: EventType.ENTITIES_CHANGED; callerId?: string }
+  | { type: EventType.ENTITIES_WRITTEN; callerId?: string }
+  | { type: EventType.ENTITY_CREATED; callerId?: string; entity: Entity }
+  | { type: EventType.COMPONENT_ADDED; callerId?: string }
+  | { type: EventType.COMPONENT_CHANGED; callerId?: string };
 
 // The context (extended state) of the machine
 export interface EntityManagerContext {}

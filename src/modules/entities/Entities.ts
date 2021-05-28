@@ -21,7 +21,7 @@ import { v4 as uuid } from "uuid";
 export function createEntity(props: CreateEntityInputProps): Entity {
   const guid = uuid();
 
-  const key = ArchitectureActorType.Entity + Base64.encode(guid);
+  //const key = ArchitectureActorType.Entity + Base64.encode(guid);
 
   const universalEntityQuery = props.entityManager.universalEntityQuery;
   const currentEntities = toEntitiesArray({
@@ -60,7 +60,7 @@ export const EntityDescription = (
 };
 
 export const toEntitiesArray = (props: {
-  callerId: string;
+  callerId?: string;
   entityQuery: EntityQueryBase;
 }): Entity[] => {
   //props.entityQuery.service.send({ type: EventType.READ_PROBLEM_SPACE_QUERY });
@@ -79,7 +79,7 @@ export const toEntitiesArray = (props: {
 };
 
 export const setEntitiesArray = (props: {
-  callerId: string;
+  callerId?: string;
   entityQuery: EntityQueryBase;
   entities: Entity[];
 }): void => {
@@ -106,7 +106,7 @@ export const setEntitiesArray = (props: {
 };
 
 export function addComponentsToEntity(props: {
-  callerId: string;
+  callerId?: string;
   entityManager: EntityManager;
   entity: Entity;
   components: IComponent[];
@@ -123,7 +123,7 @@ export function addComponentsToEntity(props: {
 }
 
 export function addComponentsToEntitiesByQuery(props: {
-  callerId: string;
+  callerId?: string;
   entityQuery: EntityQuery;
   components: IComponent[];
 }) {

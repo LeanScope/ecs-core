@@ -40,7 +40,7 @@ import {
   User,
   Tag,
   inputActionMapJson,
-} from "../Components";
+} from "../components";
 
 export function addSystemToUpdateList(props: {
   group: SystemGroup;
@@ -57,7 +57,7 @@ export function addSystemToUpdateList(props: {
 export function createSystem(props: SystemCreationProps) {}
 
 export function updateSystem(props: {
-  callerId: string;
+  callerId?: string;
   systemService: Interpreter<SystemContext, any, SystemEvent>;
 }) {
   props.systemService.send({
@@ -83,10 +83,10 @@ export function createComponentSystem(props: SystemCreationProps): System {
     {
       actions: {
         [TransitionActionName.onStartRunning]: (_context, _event) => {
-          console.info("Starting component system");
+          //console.info("Starting component system");
         },
         [TransitionActionName.onUpdate]: (_context, _event) => {
-          console.info("Component system updated");
+          //console.info("Component system updated");
           //universalEntityQuery.service.send({ type: EventType.READ_QUERY, callerId: type });
         },
       },

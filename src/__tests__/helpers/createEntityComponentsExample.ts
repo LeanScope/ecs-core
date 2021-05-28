@@ -1,7 +1,7 @@
 import { Entity } from "../../model/entities";
 import { World } from "../../model/entities/world";
 import { createEntity } from "../../modules/entities";
-import { Test_1, Test_2, Test_3, Test_4 } from "../components/test-components";
+import { Test_1, Test_2, Test_3, Test_4 } from "../components/TestComponents";
 
 export function createEntityComponentsExample(world: World): Entity[] {
   const entities: Entity[] = [];

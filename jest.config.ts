@@ -156,6 +156,7 @@ export default {
     "\\\\node_modules\\\\",
     "<rootDir>/src/__tests__/components/",
     "<rootDir>/src/__tests__/helpers/",
+    "<rootDir>/src/__tests__/systems/",
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files

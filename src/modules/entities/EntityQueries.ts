@@ -99,7 +99,7 @@ export function createUniversalEntityQuery(
             target: StateName.fetchingSolutionSpaceEntities,
           },
           [EventType.WRITE_QUERY_SYNC]: {
-            target: StateName.idle,
+            target: "test",
             actions: [
               assign({
                 entities: (_context, event) => {
@@ -126,6 +126,7 @@ export function createUniversalEntityQuery(
           },
         },
       },
+      test: {},
       fetchingSolutionSpaceEntities: {
         invoke: {
           id: "fetchingSolutionSpaceEntities",
@@ -137,14 +138,14 @@ export function createUniversalEntityQuery(
             target: StateName.idle,
             actions: [
               (_context, event) => {
-                console.info(
+                /* console.info(
                   "Async response from " +
                     ArchitectureActorType.UniversalEntityQuery
-                );
+                ); */
               },
               assign({
                 entities: (context, _event) => {
-                  console.info("Response from fetching solution entities");
+                  /* console.info("Response from fetching solution entities"); */
                   return context.entities;
                 },
               }),
@@ -169,7 +170,7 @@ export function createUniversalEntityQuery(
             actions: [
               assign({
                 entities: (context, event) => {
-                  console.info("Response from fetching problem entities");
+                  /* console.info("Response from fetching problem entities"); */
                   const currentEntities = context.entities;
                   const mergedEntities = [
                     ...event.data.entities,
@@ -191,6 +192,10 @@ export function createUniversalEntityQuery(
   });
 
   const queryService = createStateMachineService(machine);
+  queryService.onTransition((state) => {
+    console.log(state.value);
+  });
+
   return {
     callerId: props.callerId,
     apolloClient: props.apolloClient,
@@ -305,10 +310,10 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
                     entities: mergedEntities,
                   });
 
-                  console.info(
+                  /* console.info(
                     "Entities of custom query: " +
                       JSON.stringify(event.entities)
-                  );
+                  ); */
                   return event.entities;
                 },
               }),

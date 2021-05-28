@@ -60,10 +60,10 @@ describe("Test System functions", () => {
     world.systemGroups.push(testSystemGroup);
 
     world.systemsService.send(EventType.START_RUN_SYSTEM);
-    updateSystem({
-      callerId: world.callerId,
-      systemService: world.systemsService,
-    });
+    // updateSystem({
+    //   callerId: world.callerId,
+    //   systemService: world.systemsService,
+    // });
 
     //world.systemsService.send(EventType.START_UPDATE_SYSTEM);
 
@@ -89,8 +89,8 @@ describe("Test System functions", () => {
           component.type === TestComponentType_3.type ||
           component.type === TestComponentType_4.type
         ) {
-          expect((component as TestComponent).testString).toBe("1");
-          expect((component as TestComponent).testNumber).toBe(1);
+          expect((component as TestComponent).testString).toBe("Starting");
+          expect((component as TestComponent).testNumber).toBe(0);
           expect((component as TestComponent).testBoolean).toBe(true);
         }
       }

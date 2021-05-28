@@ -126,10 +126,13 @@ export function createSystemMachineConfig(
         },
       },
       initializing: {
+        entry: [
+          TransitionActionName.onStartRunning
+        ],
         on: {
           [EventType.START_UPDATE_SYSTEM]: {
             target: StateName.running,
-            actions: [TransitionActionName.onStartRunning],
+            actions: [],
           },
         },
       },

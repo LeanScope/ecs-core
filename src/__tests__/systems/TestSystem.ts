@@ -68,8 +68,8 @@ export function createTestSystem(props: SystemCreationProps): System {
               entityManager: props.entityManager,
               componentData: {
                 type: component.type,
-                testString: "1",
-                testNumber: 1,
+                testString: "Starting",
+                testNumber: 0,
                 testBoolean: true,
               } as TestComponent,
             });

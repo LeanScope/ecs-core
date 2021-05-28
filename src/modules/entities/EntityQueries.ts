@@ -24,6 +24,7 @@ import { createStateMachineService } from "../StateMachine";
 export function getEntityQueryFromDesc(
   props: EntityQueryFromDescProps
 ): EntityQuery {
+  // @todo: store queries in a map to access them quickly
   return createEntityQuery({
     callerId: props.callerId,
     queryDesc: props.queryDesc,
@@ -201,11 +202,11 @@ export function createUniversalEntityQuery(
   });
 
   const queryService = createStateMachineService(machine);
-  queryService.onTransition((state) => {
-    const qs = queryService;
-    console.log(state.value);
-    console.log(JSON.stringify(state.context.entities));
-  });
+  // queryService.onTransition((state) => {
+  //   const qs = queryService;
+  //   console.log(state.value);
+  //   console.log(JSON.stringify(state.context.entities));
+  // });
 
   return {
     callerId: props.callerId,

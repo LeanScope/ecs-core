@@ -1,6 +1,8 @@
+import { printIntrospectionSchema } from "graphql";
 import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
 import { EventType } from "../model/EventType";
+import { setComponentData } from "../modules/components";
 import {
   createDefaultWorld,
   toEntitiesArray,
@@ -8,6 +10,7 @@ import {
 } from "../modules/entities";
 import {
   addSystemToUpdateList,
+  createSystem,
   createSystemGroup,
   initSystems,
   updateAllSystems,
@@ -21,7 +24,11 @@ import {
   TestComponentType_4,
 } from "./components/TestComponents";
 import { createEntityComponentsExample } from "./helpers/createEntityComponentsExample";
-import { createBasicTestSystem } from "./systems/BasicTestSystem";
+import {
+  createBasicTestSystem_1,
+  createBasicTestSystem_2,
+} from "./systems/BasicTestSystem";
+import { createEventBasedTestSystem } from "./systems/EventBasedTestSystem";
 
 describe("Test System functions", () => {
   let world: World;
@@ -45,7 +52,7 @@ describe("Test System functions", () => {
     world = undefined;
   });
 
-  it("Should initialize the test system", () => {
+  it("Should create and initiate a custom System", () => {
     let testSystemGroup = createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
@@ -53,7 +60,190 @@ describe("Test System functions", () => {
 
     testSystemGroup = addSystemToUpdateList({
       group: testSystemGroup,
-      system: createBasicTestSystem({
+      system: createSystem({
+        callerId: world.callerId,
+        type: ArchitectureActorType.GenericSystem,
+        entityManager: world.entityManager,
+        queryDesc: {
+          all: [TestComponentType_4],
+        },
+        onStartRunning: (_context, _event, query) => {
+          const entities = toEntitiesArray({
+            entityQuery: query,
+          });
+
+          for (let entity of entities) {
+            for (let component of entity.components) {
+              if (component.type === TestComponentType_4.type) {
+                setComponentData({
+                  entity: entity,
+                  entityManager: world.entityManager,
+                  componentData: {
+                    type: component.type,
+                    testString: "Custom String",
+                    testNumber: 25,
+                    testBoolean: true,
+                  } as TestComponent,
+                });
+              }
+            }
+          }
+        },
+        onUpdate: (_context, _event, query) => {
+          const entities = toEntitiesArray({
+            entityQuery: query,
+          });
+
+          for (let entity of entities) {
+            for (let component of entity.components) {
+              if (component.type === TestComponentType_4.type) {
+                setComponentData({
+                  entity: entity,
+                  entityManager: world.entityManager,
+                  componentData: {
+                    type: component.type,
+                    testString: "Not relevant",
+                    testNumber: -1,
+                    testBoolean: false,
+                  } as TestComponent,
+                });
+              }
+            }
+          }
+        },
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+
+    const entities = toEntitiesArray({
+      callerId: world.callerId,
+      entityQuery: world.entityManager.universalEntityQuery,
+    });
+
+    expect(world.systemGroups.length).toBe(1);
+    expect(world.systemGroups[0].systems.length).toBe(1);
+    expect(world.systemGroups[0].systems[0].type).toBe(
+      ArchitectureActorType.GenericSystem
+    );
+
+    for (let entity of entities) {
+      expect(entity.components.length).toBeGreaterThanOrEqual(2);
+      expect(entity.components.length).toBeLessThanOrEqual(3);
+
+      for (let component of entity.components) {
+        if (component.type === TestComponentType_4.type) {
+          expect((component as TestComponent).testString).toBe("Custom String");
+          expect((component as TestComponent).testNumber).toBe(25);
+          expect((component as TestComponent).testBoolean).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("Should update a custom System", () => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createSystem({
+        callerId: world.callerId,
+        type: ArchitectureActorType.GenericSystem,
+        entityManager: world.entityManager,
+        queryDesc: {
+          all: [TestComponentType_4],
+        },
+        onStartRunning: (_context, _event, query) => {
+          const entities = toEntitiesArray({
+            entityQuery: query,
+          });
+
+          for (let entity of entities) {
+            for (let component of entity.components) {
+              if (component.type === TestComponentType_4.type) {
+                setComponentData({
+                  entity: entity,
+                  entityManager: world.entityManager,
+                  componentData: {
+                    type: component.type,
+                    testString: "Custom String",
+                    testNumber: 25,
+                    testBoolean: true,
+                  } as TestComponent,
+                });
+              }
+            }
+          }
+        },
+        onUpdate: (_context, _event, query) => {
+          const entities = toEntitiesArray({
+            entityQuery: query,
+          });
+
+          for (let entity of entities) {
+            for (let component of entity.components) {
+              if (component.type === TestComponentType_4.type) {
+                setComponentData({
+                  entity: entity,
+                  entityManager: world.entityManager,
+                  componentData: {
+                    type: component.type,
+                    testString: "Updated",
+                    testNumber: 123,
+                    testBoolean: false,
+                  } as TestComponent,
+                });
+              }
+            }
+          }
+        },
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+    updateAllSystems({ world });
+
+    const entities = toEntitiesArray({
+      callerId: world.callerId,
+      entityQuery: world.entityManager.universalEntityQuery,
+    });
+
+    expect(world.systemGroups.length).toBe(1);
+    expect(world.systemGroups[0].systems.length).toBe(1);
+    expect(world.systemGroups[0].systems[0].type).toBe(
+      ArchitectureActorType.GenericSystem
+    );
+
+    for (let entity of entities) {
+      expect(entity.components.length).toBeGreaterThanOrEqual(2);
+      expect(entity.components.length).toBeLessThanOrEqual(3);
+
+      for (let component of entity.components) {
+        if (component.type === TestComponentType_4.type) {
+          expect((component as TestComponent).testString).toBe("Updated");
+          expect((component as TestComponent).testNumber).toBe(123);
+          expect((component as TestComponent).testBoolean).toBe(false);
+        }
+      }
+    }
+  });
+
+  it("Should initialize the BasicTestSystem", () => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_1({
         callerId: world.callerId,
         entityManager: world.entityManager,
       }),
@@ -81,12 +271,15 @@ describe("Test System functions", () => {
       for (let component of entity.components) {
         if (
           component.type === TestComponentType_1.type ||
-          component.type === TestComponentType_2.type ||
-          component.type === TestComponentType_3.type
+          component.type === TestComponentType_2.type
         ) {
           expect((component as TestComponent).testString).toBe("Starting");
           expect((component as TestComponent).testNumber).toBe(0);
           expect((component as TestComponent).testBoolean).toBe(false);
+        } else if (component.type === TestComponentType_3.type) {
+          expect((component as TestComponent).testString).toBe("Test 3");
+          expect((component as TestComponent).testNumber).toBe(3);
+          expect((component as TestComponent).testBoolean).toBe(true);
         } else if (component.type === TestComponentType_4.type) {
           expect((component as TestComponent).testString).toBe("Test 4");
           expect((component as TestComponent).testNumber).toBe(4);
@@ -96,7 +289,7 @@ describe("Test System functions", () => {
     }
   });
 
-  it("Should execute 50 update cycles", () => {
+  it("Should execute 50 update cycles with the BasicTestSystem", () => {
     let testSystemGroup = createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
@@ -104,7 +297,7 @@ describe("Test System functions", () => {
 
     testSystemGroup = addSystemToUpdateList({
       group: testSystemGroup,
-      system: createBasicTestSystem({
+      system: createBasicTestSystem_1({
         callerId: world.callerId,
         entityManager: world.entityManager,
       }),
@@ -135,11 +328,14 @@ describe("Test System functions", () => {
       for (let component of entity.components) {
         if (
           component.type === TestComponentType_1.type ||
-          component.type === TestComponentType_2.type ||
-          component.type === TestComponentType_3.type
+          component.type === TestComponentType_2.type
         ) {
           expect((component as TestComponent).testString).toBe("50");
           expect((component as TestComponent).testNumber).toBe(50);
+          expect((component as TestComponent).testBoolean).toBe(true);
+        } else if (component.type === TestComponentType_3.type) {
+          expect((component as TestComponent).testString).toBe("Test 3");
+          expect((component as TestComponent).testNumber).toBe(3);
           expect((component as TestComponent).testBoolean).toBe(true);
         } else if (component.type === TestComponentType_4.type) {
           expect((component as TestComponent).testString).toBe("Test 4");
@@ -150,5 +346,254 @@ describe("Test System functions", () => {
     }
   });
 
-  //
+  it("Should init multiple systems", () => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_1({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_2({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+
+    const entities = toEntitiesArray({
+      entityQuery: world.entityManager.universalEntityQuery,
+    });
+
+    for (let entity of entities) {
+      for (let component of entity.components as TestComponent[]) {
+        if (component.type === TestComponentType_1.type) {
+          expect(component.testString).toBe("Starting");
+          expect(component.testNumber).toBe(0);
+          expect(component.testBoolean).toBe(false);
+        }
+        if (
+          component.type === TestComponentType_2.type ||
+          component.type === TestComponentType_3.type
+        ) {
+          expect(component.testString).toBe("Starting");
+          expect(component.testNumber).toBe(0);
+          expect(component.testBoolean).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("Should update multiple systems", () => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_1({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_2({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+    for (let i = 0; i < 30; i++) {
+      updateAllSystems({ world });
+    }
+
+    const entities = toEntitiesArray({
+      entityQuery: world.entityManager.universalEntityQuery,
+    });
+
+    for (let entity of entities) {
+      for (let component of entity.components as TestComponent[]) {
+        if (component.type === TestComponentType_1.type) {
+          expect(component.testString).toBe("30");
+          expect(component.testNumber).toBe(30);
+          expect(component.testBoolean).toBe(true);
+        } else if (component.type === TestComponentType_2.type) {
+          expect(component.testString).toBe("0");
+          expect(component.testNumber).toBe(0);
+          expect(component.testBoolean).toBe(false);
+        } else if (component.type === TestComponentType_3.type) {
+          expect(component.testString).toBe("-30");
+          expect(component.testNumber).toBe(-30);
+          expect(component.testBoolean).toBe(false);
+        }
+      }
+    }
+  });
+
+  it("Should init multiple system groups", () => {
+    let testSystemGroup_1 = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    let testSystemGroup_2 = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup_1 = addSystemToUpdateList({
+      group: testSystemGroup_1,
+      system: createBasicTestSystem_1({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    testSystemGroup_2 = addSystemToUpdateList({
+      group: testSystemGroup_2,
+      system: createBasicTestSystem_2({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup_1);
+    world.systemGroups.push(testSystemGroup_2);
+
+    initSystems({ world });
+
+    const entities = toEntitiesArray({
+      entityQuery: world.entityManager.universalEntityQuery,
+    });
+
+    for (let entity of entities) {
+      for (let component of entity.components as TestComponent[]) {
+        if (component.type === TestComponentType_1.type) {
+          expect(component.testString).toBe("Starting");
+          expect(component.testNumber).toBe(0);
+          expect(component.testBoolean).toBe(false);
+        }
+        if (
+          component.type === TestComponentType_2.type ||
+          component.type === TestComponentType_3.type
+        ) {
+          expect(component.testString).toBe("Starting");
+          expect(component.testNumber).toBe(0);
+          expect(component.testBoolean).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("Should update multiple system groups", () => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_1({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem_2({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+    for (let i = 0; i < 30; i++) {
+      updateAllSystems({ world });
+    }
+
+    const entities = toEntitiesArray({
+      entityQuery: world.entityManager.universalEntityQuery,
+    });
+
+    for (let entity of entities) {
+      for (let component of entity.components as TestComponent[]) {
+        if (component.type === TestComponentType_1.type) {
+          expect(component.testString).toBe("30");
+          expect(component.testNumber).toBe(30);
+          expect(component.testBoolean).toBe(true);
+        } else if (component.type === TestComponentType_2.type) {
+          expect(component.testString).toBe("0");
+          expect(component.testNumber).toBe(0);
+          expect(component.testBoolean).toBe(false);
+        } else if (component.type === TestComponentType_3.type) {
+          expect(component.testString).toBe("-30");
+          expect(component.testNumber).toBe(-30);
+          expect(component.testBoolean).toBe(false);
+        }
+      }
+    }
+  });
+
+  it("EventBasedSystem should update based on 'events'", (done) => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createEventBasedTestSystem({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+
+    setTimeout(() => {
+      const query = getEntityQueryFromDesc({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+        queryDesc: { all: [TestComponentType_4] },
+      });
+
+      const entities = toEntitiesArray({
+        callerId: world.callerId,
+        entityQuery: query,
+      });
+
+      for (let entity of entities) {
+        const component = entity.components.find((component) => {
+          return component.type === TestComponentType_4.type;
+        }) as TestComponent;
+
+        expect(component.testString).toBe("304");
+        expect(component.testNumber).toBe(304);
+        expect(component.testBoolean).toBe(true);
+        done();
+      }
+    }, 500);
+  }, 2000);
 });

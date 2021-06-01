@@ -127,7 +127,7 @@ export function createEntityManager(
             target: StateName.idle,
             actions: [
               (context, event) => {
-                console.info("added component entity");
+                /* console.info("added component entity"); */
               },
               //(context, event) => props.systemsService.send({ type: EventType.FINISH_UPDATE_SYSTEM, callerId: key })
             ],

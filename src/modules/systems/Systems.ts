@@ -65,7 +65,7 @@ export function createSystem(props: {
   callerId?: string;
   type: ArchitectureActorType;
   entityManager: EntityManager;
-  entityQuery: EntityQuery;
+  queryDesc: EntityQueryDesc;
   onStartRunning: (
     _context: SystemContext,
     event: SystemEvent,
@@ -77,20 +77,26 @@ export function createSystem(props: {
     query: EntityQuery
   ) => void;
 }): System {
+  const entityQuery = getEntityQueryFromDesc({
+    callerId: props.callerId,
+    entityManager: props.entityManager,
+    queryDesc: props.queryDesc,
+  });
+
   const machine = Machine<SystemContext, any, SystemEvent>(
     createSystemMachineConfig({
       callerId: props.callerId,
       key: props.type,
-      entityQuery: props.entityQuery,
+      entityQuery: entityQuery,
     }),
     {
       actions: {
         [TransitionActionName.onStartRunning]: (_context, _event) => {
-          props.onStartRunning(_context, _event, props.entityQuery);
+          props.onStartRunning(_context, _event, entityQuery);
         },
 
         [TransitionActionName.onUpdate]: (_context, _event) => {
-          props.onUpdate(_context, _event, props.entityQuery);
+          props.onUpdate(_context, _event, entityQuery);
         },
       },
     }

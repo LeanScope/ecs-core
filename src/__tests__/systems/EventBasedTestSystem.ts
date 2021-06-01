@@ -13,7 +13,7 @@ import {
   toEntitiesArray,
 } from "../../modules/entities";
 import { createStateMachineService } from "../../modules/StateMachine";
-import { createSystemMachineConfig } from "../../modules/systems";
+import { createSystemMachineConfig, updateSystem } from "../../modules/systems";
 import {
   TestComponent,
   TestComponentType_1,
@@ -41,66 +41,35 @@ export function createEventBasedTestSystem(props: SystemCreationProps): System {
     {
       actions: {
         [TransitionActionName.onStartRunning]: (_context, _event) => {
-          console.log("onStartRunning()");
+          for (let i = 0; i < 3; i++) {
+            setInterval(() => {
+              updateSystem({ systemService: service });
+            }, i * 100);
+          }
+        },
+
+        [TransitionActionName.onUpdate]: (_context, _event) => {
           const entities = toEntitiesArray({
-            callerId: props.callerId,
             entityQuery: entityQuery,
           });
 
           for (let entity of entities) {
             const component = entity.components.find((component) => {
-              return (
-                TestComponentType_1.type === component.type ||
-                TestComponentType_2.type === component.type ||
-                TestComponentType_3.type === component.type ||
-                TestComponentType_4.type === component.type
-              );
+              return component.type === TestComponentType_4.type;
             }) as TestComponent;
 
+            // INFINITY LOOP!
             setComponentData({
               callerId: props.callerId,
               entity: entity,
               entityManager: props.entityManager,
               componentData: {
                 type: component.type,
-                testString: "Starting",
-                testNumber: 0,
-                testBoolean: false,
+                testString: `${component.testNumber + 100}`,
+                testNumber: component.testNumber + 100,
+                testBoolean: true,
               } as TestComponent,
             });
-          }
-        },
-
-        [TransitionActionName.onUpdate]: (_context, _event) => {
-          console.log("UPDATING");
-          const entities = toEntitiesArray({
-            callerId: props.callerId,
-            entityQuery: entityQuery,
-          });
-
-          for (let entity of entities) {
-            const components = entity.components.filter((component) => {
-              return (
-                TestComponentType_1.type === component.type ||
-                TestComponentType_2.type === component.type ||
-                TestComponentType_3.type === component.type ||
-                TestComponentType_4.type === component.type
-              );
-            }) as TestComponent[];
-
-            for (let component of components) {
-              setComponentData({
-                callerId: props.callerId,
-                entity: entity,
-                entityManager: props.entityManager,
-                componentData: {
-                  type: component.type,
-                  testString: `${component.testNumber + 1}`,
-                  testNumber: component.testNumber + 1,
-                  testBoolean: true,
-                } as TestComponent,
-              });
-            }
           }
         },
       },

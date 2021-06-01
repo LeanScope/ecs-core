@@ -23,7 +23,7 @@ import * as _ from "lodash";
 import { TransitionActionName } from "../../model/TransitionActionName";
 import { EntityGuids, EntityNames } from "../../api/Entities";
 import { createStateMachineService } from "../StateMachine";
-import { getEntityQueryFromDesc } from "../entities";
+import { createDefaultWorld, getEntityQueryFromDesc } from "../entities";
 import {
   addComponentsToEntitiesByQuery,
   createEntity,
@@ -41,6 +41,7 @@ import {
   Tag,
   inputActionMapJson,
 } from "../components";
+import { World } from "../../model/entities";
 
 export function addSystemToUpdateList(props: {
   group: SystemGroup;
@@ -68,6 +69,14 @@ export function updateSystem(props: {
     type: EventType.FINISH_UPDATE_SYSTEM,
     callerId: props.callerId,
   });
+}
+
+export function initSystems(props: { callerId?: string; world: World }) {
+  props.world.systemsService.send(EventType.START_RUN_SYSTEM);
+}
+
+export function updateAllSystems(props: { callerId?: string; world: World }) {
+  props.world.systemsService.send(EventType.START_UPDATE_SYSTEM);
 }
 
 export function createComponentSystem(props: SystemCreationProps): System {
@@ -126,15 +135,8 @@ export function createSystemMachineConfig(
         },
       },
       initializing: {
-        entry: [
-          TransitionActionName.onStartRunning
-        ],
-        on: {
-          [EventType.START_UPDATE_SYSTEM]: {
-            target: StateName.running,
-            actions: [TransitionActionName.onUpdate],
-          },
-        },
+        entry: [TransitionActionName.onStartRunning],
+        always: [StateName.running],
       },
       running: {
         on: {

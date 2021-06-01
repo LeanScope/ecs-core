@@ -14,4 +14,5 @@ export enum ArchitectureActorType {
   EntityManager = "🎬 EntityManager",
   EntityQuery = "💬 EntityQuery",
   UniversalEntityQuery = "💬 UniversalEntityQuery",
+  GenericSystem = "GenericSystem",
 }

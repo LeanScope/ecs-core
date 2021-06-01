@@ -34,26 +34,27 @@ export function createDefaultWorld(props: WorldCreationProps): World {
         on: {
           [EventType.START_RUN_SYSTEM]: {
             target: StateName.initializing,
-            actions: [
-              (_context, event) => {
-                for (let systemGroup of systemGroups) {
-                  for (let system of systemGroup.systems) {
-                    system.service.send({
-                      type: EventType.START_RUN_SYSTEM,
-                      callerId: type,
-                    });
-                  }
-                }
-              },
-            ],
+            actions: [],
           },
         },
       },
       initializing: {
+        entry: [
+          (_context, event) => {
+            for (let systemGroup of systemGroups) {
+              for (let system of systemGroup.systems) {
+                system.service.send({
+                  type: EventType.START_RUN_SYSTEM,
+                  callerId: type,
+                });
+              }
+            }
+          },
+          send({ type: EventType.FINISH_INITIALIZING, callerId: type }),
+        ],
         on: {
-          [EventType.START_UPDATE_SYSTEM]: {
-            target: StateName.updating,
-            actions: [],
+          [EventType.FINISH_INITIALIZING]: {
+            target: StateName.running,
           },
         },
       },
@@ -61,7 +62,6 @@ export function createDefaultWorld(props: WorldCreationProps): World {
         on: {
           [EventType.START_UPDATE_SYSTEM]: {
             target: StateName.updating,
-            actions: [],
           },
         },
       },
@@ -101,14 +101,14 @@ export function createDefaultWorld(props: WorldCreationProps): World {
   });
   const systemsService = createStateMachineService(machine);
 
-  /*   let componentSystemGroup = createComponentSystemGroup({
+  let componentSystemGroup = createComponentSystemGroup({
     callerId: callerId,
     systemsService: systemsService,
   });
-    let interactionSystemGroup = createInteractionSystemGroup({
+  let interactionSystemGroup = createInteractionSystemGroup({
     callerId: callerId,
     systemsService: systemsService,
-  }); */
+  });
 
   const entityManager = createEntityManager({
     callerId: callerId,
@@ -116,7 +116,7 @@ export function createDefaultWorld(props: WorldCreationProps): World {
     systemsService: systemsService,
   });
 
-  /*   componentSystemGroup = addSystemToUpdateList({
+  componentSystemGroup = addSystemToUpdateList({
     group: componentSystemGroup,
     system: createComponentSystem({
       callerId: callerId,
@@ -124,7 +124,7 @@ export function createDefaultWorld(props: WorldCreationProps): World {
     }),
   });
 
-    interactionSystemGroup = addSystemToUpdateList({
+  interactionSystemGroup = addSystemToUpdateList({
     group: interactionSystemGroup,
     system: createInteractionSystem({
       callerId: callerId,
@@ -148,8 +148,8 @@ export function createDefaultWorld(props: WorldCreationProps): World {
     }),
   });
 
-  systemGroups.push(componentSystemGroup);
-    systemGroups.push(interactionSystemGroup); */
+  /*   systemGroups.push(componentSystemGroup);
+  systemGroups.push(interactionSystemGroup); */
 
   return {
     callerId: callerId,

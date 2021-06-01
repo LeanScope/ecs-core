@@ -9,6 +9,8 @@ import {
 import {
   addSystemToUpdateList,
   createSystemGroup,
+  initSystems,
+  updateAllSystems,
   updateSystem,
 } from "../modules/systems";
 import {
@@ -19,7 +21,7 @@ import {
   TestComponentType_4,
 } from "./components/TestComponents";
 import { createEntityComponentsExample } from "./helpers/createEntityComponentsExample";
-import { createTestSystem } from "./systems/TestSystem";
+import { createBasicTestSystem } from "./systems/BasicTestSystem";
 
 describe("Test System functions", () => {
   let world: World;
@@ -43,7 +45,7 @@ describe("Test System functions", () => {
     world = undefined;
   });
 
-  it("Should update the test system once", () => {
+  it("Should initialize the test system", () => {
     let testSystemGroup = createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
@@ -51,7 +53,7 @@ describe("Test System functions", () => {
 
     testSystemGroup = addSystemToUpdateList({
       group: testSystemGroup,
-      system: createTestSystem({
+      system: createBasicTestSystem({
         callerId: world.callerId,
         entityManager: world.entityManager,
       }),
@@ -59,13 +61,7 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    world.systemsService.send(EventType.START_RUN_SYSTEM);
-    // updateSystem({
-    //   callerId: world.callerId,
-    //   systemService: world.systemsService,
-    // });
-
-    //world.systemsService.send(EventType.START_UPDATE_SYSTEM);
+    initSystems({ world });
 
     const query = getEntityQueryFromDesc({
       callerId: world.callerId,
@@ -86,14 +82,73 @@ describe("Test System functions", () => {
         if (
           component.type === TestComponentType_1.type ||
           component.type === TestComponentType_2.type ||
-          component.type === TestComponentType_3.type ||
-          component.type === TestComponentType_4.type
+          component.type === TestComponentType_3.type
         ) {
           expect((component as TestComponent).testString).toBe("Starting");
           expect((component as TestComponent).testNumber).toBe(0);
+          expect((component as TestComponent).testBoolean).toBe(false);
+        } else if (component.type === TestComponentType_4.type) {
+          expect((component as TestComponent).testString).toBe("Test 4");
+          expect((component as TestComponent).testNumber).toBe(4);
           expect((component as TestComponent).testBoolean).toBe(true);
         }
       }
     }
   });
+
+  it("Should execute 50 update cycles", () => {
+    let testSystemGroup = createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createBasicTestSystem({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    initSystems({ world });
+    for (let i = 0; i < 50; i++) {
+      updateAllSystems({ world });
+    }
+
+    const query = getEntityQueryFromDesc({
+      callerId: world.callerId,
+      entityManager: world.entityManager,
+      queryDesc: {},
+    });
+
+    const entities = toEntitiesArray({
+      callerId: world.callerId,
+      entityQuery: query,
+    });
+
+    for (let entity of entities) {
+      expect(entity.components.length).toBeGreaterThanOrEqual(2);
+      expect(entity.components.length).toBeLessThanOrEqual(3);
+
+      for (let component of entity.components) {
+        if (
+          component.type === TestComponentType_1.type ||
+          component.type === TestComponentType_2.type ||
+          component.type === TestComponentType_3.type
+        ) {
+          expect((component as TestComponent).testString).toBe("50");
+          expect((component as TestComponent).testNumber).toBe(50);
+          expect((component as TestComponent).testBoolean).toBe(true);
+        } else if (component.type === TestComponentType_4.type) {
+          expect((component as TestComponent).testString).toBe("Test 4");
+          expect((component as TestComponent).testNumber).toBe(4);
+          expect((component as TestComponent).testBoolean).toBe(true);
+        }
+      }
+    }
+  });
+
+  //
 });

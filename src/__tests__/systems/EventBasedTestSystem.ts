@@ -22,18 +22,13 @@ import {
   TestComponentType_4,
 } from "../components/TestComponents";
 
-export function createTestSystem(props: SystemCreationProps): System {
-  const type = ArchitectureActorType.InteractionSystem;
+export function createEventBasedTestSystem(props: SystemCreationProps): System {
+  const type = ArchitectureActorType.GenericSystem;
   const entityQuery = getEntityQueryFromDesc({
     callerId: props.callerId,
     entityManager: props.entityManager,
     queryDesc: {
-      any: [
-        TestComponentType_1,
-        TestComponentType_2,
-        TestComponentType_3,
-        TestComponentType_4,
-      ],
+      all: [TestComponentType_4],
     },
   });
 
@@ -46,7 +41,7 @@ export function createTestSystem(props: SystemCreationProps): System {
     {
       actions: {
         [TransitionActionName.onStartRunning]: (_context, _event) => {
-          console.log('onStartRunning()');
+          console.log("onStartRunning()");
           const entities = toEntitiesArray({
             callerId: props.callerId,
             entityQuery: entityQuery,
@@ -70,7 +65,7 @@ export function createTestSystem(props: SystemCreationProps): System {
                 type: component.type,
                 testString: "Starting",
                 testNumber: 0,
-                testBoolean: true,
+                testBoolean: false,
               } as TestComponent,
             });
           }

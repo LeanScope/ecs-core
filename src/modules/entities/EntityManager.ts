@@ -68,7 +68,6 @@ export function createEntityManager(
               },
             ],
           },
-
           ENTITIES_CHANGED: {
             target: StateName.updating,
             actions: [

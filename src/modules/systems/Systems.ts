@@ -41,7 +41,13 @@ import {
   Tag,
   inputActionMapJson,
 } from "../components";
-import { World } from "../../model/entities";
+import {
+  Entity,
+  EntityManager,
+  EntityQuery,
+  EntityQueryDesc,
+  World,
+} from "../../model/entities";
 
 export function addSystemToUpdateList(props: {
   group: SystemGroup;
@@ -55,7 +61,50 @@ export function addSystemToUpdateList(props: {
   };
 }
 
-export function createSystem(props: SystemCreationProps) {}
+export function createSystem(props: {
+  callerId?: string;
+  type: ArchitectureActorType;
+  entityManager: EntityManager;
+  entityQuery: EntityQuery;
+  onStartRunning: (
+    _context: SystemContext,
+    event: SystemEvent,
+    query: EntityQuery
+  ) => void;
+  onUpdate: (
+    _context: SystemContext,
+    event: SystemEvent,
+    query: EntityQuery
+  ) => void;
+}): System {
+  const machine = Machine<SystemContext, any, SystemEvent>(
+    createSystemMachineConfig({
+      callerId: props.callerId,
+      key: props.type,
+      entityQuery: props.entityQuery,
+    }),
+    {
+      actions: {
+        [TransitionActionName.onStartRunning]: (_context, _event) => {
+          props.onStartRunning(_context, _event, props.entityQuery);
+        },
+
+        [TransitionActionName.onUpdate]: (_context, _event) => {
+          props.onUpdate(_context, _event, props.entityQuery);
+        },
+      },
+    }
+  );
+
+  const service = createStateMachineService(machine);
+
+  return {
+    callerId: props.callerId,
+    type: props.type,
+    entityManager: props.entityManager,
+    service: service,
+  };
+}
 
 export function updateSystem(props: {
   callerId?: string;

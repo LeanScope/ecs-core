@@ -1,11 +1,11 @@
 import { Entity } from "../entities";
 import { IComponent } from "./Component";
 
-export interface AddComponentsInputProps {
+export interface AddComponentInputProps {
   entities: Entity[];
   components: IComponent[];
 }
 
-export interface AddComponentsOutputProps extends AddComponentsInputProps {
+export interface AddComponentOutputProps extends AddComponentInputProps {
   entities: Entity[];
 }

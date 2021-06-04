@@ -1,7 +1,7 @@
 import { ArchitectureActorType } from "../../model/architecture";
 import {
-  AddComponentsInputProps,
-  AddComponentsOutputProps,
+  AddComponentInputProps,
+  AddComponentOutputProps,
   IComponent,
   IComponentType,
 } from "../../model/components";
@@ -17,6 +17,7 @@ import {
 import { EventType } from "../../model/EventType";
 import { Base64 } from "js-base64";
 import { v4 as uuid } from "uuid";
+import { Component } from "react";
 
 export function createEntity(props: CreateEntityInputProps): Entity {
   const guid = uuid();
@@ -124,7 +125,7 @@ export function addComponentsToEntity(props: {
 
 export function addComponentsToEntitiesByQuery(props: {
   callerId?: string;
-  entityQuery: EntityQuery;
+  entityQuery: EntityQueryBase;
   components: IComponent[];
 }) {
   const newEntities = addComponentsToEntities({
@@ -141,9 +142,9 @@ export function addComponentsToEntitiesByQuery(props: {
   });
 }
 
-export function addComponentsToEntities(
-  props: AddComponentsInputProps
-): AddComponentsOutputProps {
+function addComponentsToEntities(
+  props: AddComponentInputProps
+): AddComponentOutputProps {
   const currentEntities = props.entities;
 
   const newEntities: Entity[] = [];

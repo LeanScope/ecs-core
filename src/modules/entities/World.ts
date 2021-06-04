@@ -1,13 +1,19 @@
 import { Machine, send } from "xstate";
 import { ArchitectureActorType } from "../../model/architecture";
-import { World, WorldCreationProps } from "../../model/entities";
+import { World, WorldContext, WorldCreationProps } from "../../model/entities";
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
-import { SystemContext, SystemEvent, SystemGroup } from "../../model/systems";
+import {
+  System,
+  SystemContext,
+  SystemEvent,
+  SystemGroup,
+} from "../../model/systems";
 import { createStateMachineService } from "../StateMachine";
 import {
   createComponentSystemGroup,
   createInteractionSystemGroup,
+  updateSystem,
 } from "../systems";
 import { createEntityManager } from "./EntityManager";
 import {
@@ -18,6 +24,7 @@ import {
   createInputSystem,
 } from "../systems";
 import { v4 as uuid } from "uuid";
+import { assign } from "xstate";
 
 export function createDefaultWorld(props: WorldCreationProps): World {
   const type = ArchitectureActorType.World;
@@ -26,8 +33,11 @@ export function createDefaultWorld(props: WorldCreationProps): World {
   const callerId = props.name;
   let systemGroups: SystemGroup[] = [];
 
-  const machine = Machine<SystemContext, any, SystemEvent>({
+  const machine = Machine<WorldContext, any, SystemEvent>({
     key: type,
+    context: {
+      updateSystems: [],
+    },
     initial: StateName.idle,
     states: {
       idle: {
@@ -67,14 +77,25 @@ export function createDefaultWorld(props: WorldCreationProps): World {
       },
       updating: {
         entry: [
-          (_context, event) => {
-            for (let systemGroup of systemGroups) {
-              for (let system of systemGroup.systems) {
-                system.service.send({
-                  type: EventType.START_UPDATE_SYSTEM,
-                  callerId: type,
-                });
+          assign({
+            updateSystems: (_context, event) => {
+              const updateSystems: System[] = [];
+              for (let systemGroup of systemGroups) {
+                for (let system of systemGroup.systems) {
+                  if (system.service.state.value === StateName.running) {
+                    updateSystems.push(system);
+                  }
+                }
               }
+              return updateSystems;
+            },
+          }),
+          (_context, event) => {
+            for (let system of _context.updateSystems) {
+              system.service.send({
+                type: EventType.START_UPDATE_SYSTEM,
+                callerId: type,
+              });
             }
           },
           send({ type: EventType.FINISH_UPDATE_SYSTEM, callerId: type }),
@@ -84,8 +105,9 @@ export function createDefaultWorld(props: WorldCreationProps): World {
             target: StateName.running,
             actions: [
               (_context, event) => {
-                for (let systemGroup of systemGroups) {
-                  for (let system of systemGroup.systems) {
+                const updateSystems = _context.updateSystems;
+                for (let system of updateSystems) {
+                  if (updateSystems.includes(system)) {
                     system.service.send({
                       type: EventType.FINISH_UPDATE_SYSTEM,
                       callerId: type,

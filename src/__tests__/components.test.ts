@@ -6,7 +6,6 @@ import {
   toEntitiesArray,
   addComponentsToEntity,
   getEntityQueryFromDesc,
-  addComponentsToEntities,
   addComponentsToEntitiesByQuery,
 } from "../modules/entities";
 import {
@@ -253,8 +252,8 @@ describe("Test Component functions", () => {
   it("Should add components to referenced Entities", () => {
     let entities = createEntityComponentsExample(world);
 
-    addComponentsToEntities({
-      entities: entities,
+    addComponentsToEntitiesByQuery({
+      entityQuery: world.entityManager.universalEntityQuery,
       components: [{ type: "T" }, { type: "E" }, { type: "ST" }],
     });
 

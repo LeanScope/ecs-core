@@ -1,7 +1,5 @@
-import { printIntrospectionSchema } from "graphql";
 import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
-import { EventType } from "../model/EventType";
 import { setComponentData } from "../modules/components";
 import {
   createDefaultWorld,
@@ -14,7 +12,6 @@ import {
   createSystemGroup,
   initSystems,
   updateAllSystems,
-  updateSystem,
 } from "../modules/systems";
 import {
   TestComponent,
@@ -595,5 +592,5 @@ describe("Test System functions", () => {
         done();
       }
     }, 500);
-  }, 2000);
+  });
 });

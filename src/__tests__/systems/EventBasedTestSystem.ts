@@ -42,7 +42,7 @@ export function createEventBasedTestSystem(props: SystemCreationProps): System {
       actions: {
         [TransitionActionName.onStartRunning]: (_context, _event) => {
           for (let i = 0; i < 3; i++) {
-            setInterval(() => {
+            setTimeout(() => {
               updateSystem({ systemService: service });
             }, i * 100);
           }
@@ -58,7 +58,6 @@ export function createEventBasedTestSystem(props: SystemCreationProps): System {
               return component.type === TestComponentType_4.type;
             }) as TestComponent;
 
-            // INFINITY LOOP!
             setComponentData({
               callerId: props.callerId,
               entity: entity,

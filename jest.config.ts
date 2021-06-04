@@ -160,6 +160,7 @@ export default {
     //"<rootDir>/src/__tests__/entities.test.ts",
     //"<rootDir>/src/__tests__/queries.test.ts",
     //"<rootDir>/src/__tests__/components.test.ts",
+    //"<rootDir>/src/__tests__/systems.test.ts",
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files

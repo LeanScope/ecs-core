@@ -1,13 +1,6 @@
+import ecs from "../index";
 import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
-import {
-  createEntity,
-  createDefaultWorld,
-  toEntitiesArray,
-  addComponentsToEntity,
-  getEntityQueryFromDesc,
-  addComponentsToEntitiesByQuery,
-} from "../modules/entities";
 import {
   TestComponentType_1,
   TestComponentType_3,
@@ -20,7 +13,7 @@ describe("Test Component functions", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -37,12 +30,12 @@ describe("Test Component functions", () => {
   });
 
   it("Initializes Entity with 0 Components", () => {
-    createEntity({
+    ecs.createEntity({
       entityManager: world.entityManager,
       callerId: world.callerId,
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
       callerId: world.callerId,
     });
@@ -52,7 +45,7 @@ describe("Test Component functions", () => {
   });
 
   it("Initializes Entity with 1 Component", () => {
-    createEntity({
+    ecs.createEntity({
       entityManager: world.entityManager,
       callerId: world.callerId,
       components: [
@@ -60,7 +53,7 @@ describe("Test Component functions", () => {
       ],
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
       callerId: world.callerId,
     });
@@ -71,7 +64,7 @@ describe("Test Component functions", () => {
   });
 
   it("Initializes Entity with multiple Components", () => {
-    createEntity({
+    ecs.createEntity({
       entityManager: world.entityManager,
       callerId: world.callerId,
       components: [
@@ -80,7 +73,7 @@ describe("Test Component functions", () => {
       ],
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
       callerId: world.callerId,
     });
@@ -95,12 +88,12 @@ describe("Test Component functions", () => {
   });
 
   it("Should add a component AFTER Entity creation", () => {
-    const entity = createEntity({
+    const entity = ecs.createEntity({
       entityManager: world.entityManager,
       callerId: world.callerId,
     });
 
-    addComponentsToEntity({
+    ecs.addComponentsToEntity({
       callerId: world.callerId,
       entityManager: world.entityManager,
       entity: entity,
@@ -109,13 +102,13 @@ describe("Test Component functions", () => {
       ],
     });
 
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [TestComponentType_1] },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -126,12 +119,12 @@ describe("Test Component functions", () => {
   });
 
   it("Should add mutiple components AFTER Entity creation", () => {
-    const entity = createEntity({
+    const entity = ecs.createEntity({
       entityManager: world.entityManager,
       callerId: world.callerId,
     });
 
-    addComponentsToEntity({
+    ecs.addComponentsToEntity({
       callerId: world.callerId,
       entityManager: world.entityManager,
       entity: entity,
@@ -141,13 +134,13 @@ describe("Test Component functions", () => {
       ],
     });
 
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [TestComponentType_1] },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -161,25 +154,25 @@ describe("Test Component functions", () => {
   it("Should add a component to all existing Entities", () => {
     createEntityComponentsExample(world);
 
-    const queryAll = getEntityQueryFromDesc({
+    const queryAll = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {},
     });
 
-    addComponentsToEntitiesByQuery({
+    ecs.addComponentsToEntitiesByQuery({
       callerId: world.callerId,
       entityQuery: queryAll,
       components: [{ type: "T" }],
     });
 
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [{ type: "T" }] },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -190,19 +183,19 @@ describe("Test Component functions", () => {
   it("Should add multiple components to all existing Entities", () => {
     createEntityComponentsExample(world);
 
-    const queryAll = getEntityQueryFromDesc({
+    const queryAll = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {},
     });
 
-    addComponentsToEntitiesByQuery({
+    ecs.addComponentsToEntitiesByQuery({
       callerId: world.callerId,
       entityQuery: queryAll,
       components: [{ type: "T" }, { type: "E" }, { type: "ST" }],
     });
 
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -210,7 +203,7 @@ describe("Test Component functions", () => {
       },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -221,19 +214,19 @@ describe("Test Component functions", () => {
   it("Should add components to queried Entities", () => {
     createEntityComponentsExample(world);
 
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [TestComponentType_3] },
     });
 
-    addComponentsToEntitiesByQuery({
+    ecs.addComponentsToEntitiesByQuery({
       callerId: world.callerId,
       entityQuery: query,
       components: [{ type: "T" }, { type: "E" }, { type: "ST" }],
     });
 
-    query = getEntityQueryFromDesc({
+    query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -241,7 +234,7 @@ describe("Test Component functions", () => {
       },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -252,12 +245,12 @@ describe("Test Component functions", () => {
   it("Should add components to referenced Entities", () => {
     let entities = createEntityComponentsExample(world);
 
-    addComponentsToEntitiesByQuery({
+    ecs.addComponentsToEntitiesByQuery({
       entityQuery: world.entityManager.universalEntityQuery,
       components: [{ type: "T" }, { type: "E" }, { type: "ST" }],
     });
 
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -265,7 +258,7 @@ describe("Test Component functions", () => {
       },
     });
 
-    entities = toEntitiesArray({
+    entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });

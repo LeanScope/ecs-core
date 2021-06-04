@@ -1,18 +1,5 @@
 import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
-import { setComponentData } from "../modules/components";
-import {
-  createDefaultWorld,
-  toEntitiesArray,
-  getEntityQueryFromDesc,
-} from "../modules/entities";
-import {
-  addSystemToUpdateList,
-  createSystem,
-  createSystemGroup,
-  initSystems,
-  updateAllSystems,
-} from "../modules/systems";
 import {
   TestComponent,
   TestComponentType_1,
@@ -26,12 +13,13 @@ import {
   createBasicTestSystem_2,
 } from "./systems/BasicTestSystem";
 import { createEventBasedTestSystem } from "./systems/EventBasedTestSystem";
+import ecs from "../index";
 
 describe("Test System functions", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -50,14 +38,14 @@ describe("Test System functions", () => {
   });
 
   it("Should create and initiate a custom System", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
-      system: createSystem({
+      system: ecs.createSystem({
         callerId: world.callerId,
         type: ArchitectureActorType.GenericSystem,
         entityManager: world.entityManager,
@@ -65,14 +53,14 @@ describe("Test System functions", () => {
           all: [TestComponentType_4],
         },
         onStartRunning: (_context, _event, query) => {
-          const entities = toEntitiesArray({
+          const entities = ecs.toEntitiesArray({
             entityQuery: query,
           });
 
           for (let entity of entities) {
             for (let component of entity.components) {
               if (component.type === TestComponentType_4.type) {
-                setComponentData({
+                ecs.setComponentData({
                   entity: entity,
                   entityManager: world.entityManager,
                   componentData: {
@@ -87,14 +75,14 @@ describe("Test System functions", () => {
           }
         },
         onUpdate: (_context, _event, query) => {
-          const entities = toEntitiesArray({
+          const entities = ecs.toEntitiesArray({
             entityQuery: query,
           });
 
           for (let entity of entities) {
             for (let component of entity.components) {
               if (component.type === TestComponentType_4.type) {
-                setComponentData({
+                ecs.setComponentData({
                   entity: entity,
                   entityManager: world.entityManager,
                   componentData: {
@@ -113,9 +101,9 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: world.entityManager.universalEntityQuery,
     });
@@ -141,14 +129,14 @@ describe("Test System functions", () => {
   });
 
   it("Should update a custom System", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
-      system: createSystem({
+      system: ecs.createSystem({
         callerId: world.callerId,
         type: ArchitectureActorType.GenericSystem,
         entityManager: world.entityManager,
@@ -156,14 +144,14 @@ describe("Test System functions", () => {
           all: [TestComponentType_4],
         },
         onStartRunning: (_context, _event, query) => {
-          const entities = toEntitiesArray({
+          const entities = ecs.toEntitiesArray({
             entityQuery: query,
           });
 
           for (let entity of entities) {
             for (let component of entity.components) {
               if (component.type === TestComponentType_4.type) {
-                setComponentData({
+                ecs.setComponentData({
                   entity: entity,
                   entityManager: world.entityManager,
                   componentData: {
@@ -178,14 +166,14 @@ describe("Test System functions", () => {
           }
         },
         onUpdate: (_context, _event, query) => {
-          const entities = toEntitiesArray({
+          const entities = ecs.toEntitiesArray({
             entityQuery: query,
           });
 
           for (let entity of entities) {
             for (let component of entity.components) {
               if (component.type === TestComponentType_4.type) {
-                setComponentData({
+                ecs.setComponentData({
                   entity: entity,
                   entityManager: world.entityManager,
                   componentData: {
@@ -204,10 +192,10 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
-    updateAllSystems({ world });
+    ecs.initSystems({ world });
+    ecs.updateAllSystems({ world });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: world.entityManager.universalEntityQuery,
     });
@@ -233,12 +221,12 @@ describe("Test System functions", () => {
   });
 
   it("Should initialize the BasicTestSystem", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_1({
         callerId: world.callerId,
@@ -248,15 +236,15 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
 
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {},
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -287,12 +275,12 @@ describe("Test System functions", () => {
   });
 
   it("Should execute 50 update cycles with the BasicTestSystem", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_1({
         callerId: world.callerId,
@@ -302,18 +290,18 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
     for (let i = 0; i < 50; i++) {
-      updateAllSystems({ world });
+      ecs.updateAllSystems({ world });
     }
 
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {},
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -344,12 +332,12 @@ describe("Test System functions", () => {
   });
 
   it("Should init multiple systems", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_1({
         callerId: world.callerId,
@@ -357,7 +345,7 @@ describe("Test System functions", () => {
       }),
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_2({
         callerId: world.callerId,
@@ -367,9 +355,9 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
     });
 
@@ -393,12 +381,12 @@ describe("Test System functions", () => {
   });
 
   it("Should update multiple systems", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_1({
         callerId: world.callerId,
@@ -406,7 +394,7 @@ describe("Test System functions", () => {
       }),
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_2({
         callerId: world.callerId,
@@ -416,12 +404,12 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
     for (let i = 0; i < 30; i++) {
-      updateAllSystems({ world });
+      ecs.updateAllSystems({ world });
     }
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
     });
 
@@ -445,17 +433,17 @@ describe("Test System functions", () => {
   });
 
   it("Should init multiple system groups", () => {
-    let testSystemGroup_1 = createSystemGroup({
+    let testSystemGroup_1 = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    let testSystemGroup_2 = createSystemGroup({
+    let testSystemGroup_2 = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup_1 = addSystemToUpdateList({
+    testSystemGroup_1 = ecs.addSystemToUpdateList({
       group: testSystemGroup_1,
       system: createBasicTestSystem_1({
         callerId: world.callerId,
@@ -463,7 +451,7 @@ describe("Test System functions", () => {
       }),
     });
 
-    testSystemGroup_2 = addSystemToUpdateList({
+    testSystemGroup_2 = ecs.addSystemToUpdateList({
       group: testSystemGroup_2,
       system: createBasicTestSystem_2({
         callerId: world.callerId,
@@ -474,9 +462,9 @@ describe("Test System functions", () => {
     world.systemGroups.push(testSystemGroup_1);
     world.systemGroups.push(testSystemGroup_2);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
     });
 
@@ -500,12 +488,12 @@ describe("Test System functions", () => {
   });
 
   it("Should update multiple system groups", () => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_1({
         callerId: world.callerId,
@@ -513,7 +501,7 @@ describe("Test System functions", () => {
       }),
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createBasicTestSystem_2({
         callerId: world.callerId,
@@ -523,12 +511,12 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
     for (let i = 0; i < 30; i++) {
-      updateAllSystems({ world });
+      ecs.updateAllSystems({ world });
     }
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
     });
 
@@ -552,12 +540,12 @@ describe("Test System functions", () => {
   });
 
   it("EventBasedSystem should update based on 'events'", (done) => {
-    let testSystemGroup = createSystemGroup({
+    let testSystemGroup = ecs.createSystemGroup({
       callerId: world.callerId,
       systemsService: world.systemsService,
     });
 
-    testSystemGroup = addSystemToUpdateList({
+    testSystemGroup = ecs.addSystemToUpdateList({
       group: testSystemGroup,
       system: createEventBasedTestSystem({
         callerId: world.callerId,
@@ -567,16 +555,16 @@ describe("Test System functions", () => {
 
     world.systemGroups.push(testSystemGroup);
 
-    initSystems({ world });
+    ecs.initSystems({ world });
 
     setTimeout(() => {
-      const query = getEntityQueryFromDesc({
+      const query = ecs.getEntityQueryFromDesc({
         callerId: world.callerId,
         entityManager: world.entityManager,
         queryDesc: { all: [TestComponentType_4] },
       });
 
-      const entities = toEntitiesArray({
+      const entities = ecs.toEntitiesArray({
         callerId: world.callerId,
         entityQuery: query,
       });

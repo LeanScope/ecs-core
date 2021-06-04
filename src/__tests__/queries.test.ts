@@ -1,24 +1,19 @@
 import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
 import {
-  getEntityQueryFromDesc,
-  createDefaultWorld,
-  toEntitiesArray,
-  createEntity,
-} from "../modules/entities";
-import {
   TestComponentType_1,
   TestComponentType_2,
   TestComponentType_3,
   TestComponentType_4,
 } from "./components/TestComponents";
 import { createEntityComponentsExample } from "./helpers/createEntityComponentsExample";
+import ecs from "../index";
 
 describe("Test Entity Queries with 'all'", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -37,7 +32,7 @@ describe("Test Entity Queries with 'all'", () => {
   });
 
   it("Should query all entities", () => {
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       entityQuery: world.entityManager.universalEntityQuery,
       callerId: world.callerId,
     });
@@ -57,13 +52,13 @@ describe("Test Entity Queries with 'all'", () => {
     ];
 
     for (let i = 1; i <= 4; i++) {
-      let query = getEntityQueryFromDesc({
+      let query = ecs.getEntityQueryFromDesc({
         callerId: world.callerId,
         entityManager: world.entityManager,
         queryDesc: { all: [componentTypes[i - 1]] },
       });
 
-      const entities = toEntitiesArray({
+      const entities = ecs.toEntitiesArray({
         callerId: world.callerId,
         entityQuery: query,
       });
@@ -76,13 +71,13 @@ describe("Test Entity Queries with 'all'", () => {
   });
 
   it("Should query entities with non-existant component type", () => {
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [{ type: "NonExistentComponent" }] },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -91,35 +86,35 @@ describe("Test Entity Queries with 'all'", () => {
   });
 
   it("Should query all entities with specific component archetype", () => {
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [TestComponentType_1, { type: "A" }] },
     });
 
-    const entities_1 = toEntitiesArray({
+    const entities_1 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
 
-    query = getEntityQueryFromDesc({
+    query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [TestComponentType_3, { type: "A" }] },
     });
 
-    const entities_2 = toEntitiesArray({
+    const entities_2 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
 
-    query = getEntityQueryFromDesc({
+    query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { all: [TestComponentType_3, { type: "B" }] },
     });
 
-    const entities_3 = toEntitiesArray({
+    const entities_3 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -151,7 +146,7 @@ describe("Test Entity Queries with 'any'", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -172,7 +167,7 @@ describe("Test Entity Queries with 'none'", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -187,24 +182,24 @@ describe("Test Entity Queries with 'none'", () => {
   });
 
   it("Should query all entities without a specific component", () => {
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { none: [TestComponentType_3] },
     });
 
-    const entities_1 = toEntitiesArray({
+    const entities_1 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
 
-    query = getEntityQueryFromDesc({
+    query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { none: [{ type: "A" }] },
     });
 
-    const entities_2 = toEntitiesArray({
+    const entities_2 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -237,13 +232,13 @@ describe("Test Entity Queries with 'none'", () => {
   });
 
   it("Should query all entities without specific components", () => {
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: { none: [TestComponentType_3, { type: "B" }] },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -266,7 +261,7 @@ describe("Test entity Queries with combined descriptors", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -281,7 +276,7 @@ describe("Test entity Queries with combined descriptors", () => {
   });
 
   it("Should return no entity", () => {
-    const query = getEntityQueryFromDesc({
+    const query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -295,7 +290,7 @@ describe("Test entity Queries with combined descriptors", () => {
       },
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
@@ -306,7 +301,7 @@ describe("Test entity Queries with combined descriptors", () => {
 
   it("Should return entities with archetype + at least one of 'any' components", () => {
     for (let i = 0; i < 20; i++) {
-      createEntity({
+      ecs.createEntity({
         callerId: world.callerId,
         entityManager: world.entityManager,
         components: [
@@ -318,7 +313,7 @@ describe("Test entity Queries with combined descriptors", () => {
       });
     }
 
-    let query = getEntityQueryFromDesc({
+    let query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -327,12 +322,12 @@ describe("Test entity Queries with combined descriptors", () => {
       },
     });
 
-    const entities_1 = toEntitiesArray({
+    const entities_1 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
 
-    query = getEntityQueryFromDesc({
+    query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -341,12 +336,12 @@ describe("Test entity Queries with combined descriptors", () => {
       },
     });
 
-    const entities_2 = toEntitiesArray({
+    const entities_2 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });
 
-    query = getEntityQueryFromDesc({
+    query = ecs.getEntityQueryFromDesc({
       callerId: world.callerId,
       entityManager: world.entityManager,
       queryDesc: {
@@ -355,7 +350,7 @@ describe("Test entity Queries with combined descriptors", () => {
       },
     });
 
-    const entities_3 = toEntitiesArray({
+    const entities_3 = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: query,
     });

@@ -1,16 +1,12 @@
 import { ArchitectureActorType } from "../model/architecture";
 import { World } from "../model/entities";
-import {
-  createEntity,
-  createDefaultWorld,
-  toEntitiesArray,
-} from "../modules/entities";
+import ecs from "../index";
 
 describe("Testing Entity functions", () => {
   let world: World;
 
   beforeEach(() => {
-    world = createDefaultWorld({
+    world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
       name: ArchitectureActorType.World,
       problemSpace: {
@@ -27,7 +23,7 @@ describe("Testing Entity functions", () => {
   });
 
   it("Should initialize world with 0 Entities", () => {
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: world.entityManager.universalEntityQuery,
     });
@@ -36,12 +32,12 @@ describe("Testing Entity functions", () => {
   });
 
   it("Should add one Entity", () => {
-    createEntity({
+    ecs.createEntity({
       callerId: world.callerId,
       entityManager: world.entityManager,
     });
 
-    const entities = toEntitiesArray({
+    const entities = ecs.toEntitiesArray({
       callerId: world.callerId,
       entityQuery: world.entityManager.universalEntityQuery,
     });

@@ -22,7 +22,7 @@ import {
 import * as _ from "lodash";
 import { TransitionActionName } from "../../model/TransitionActionName";
 import { EntityGuids, EntityNames } from "../../api/Entities";
-import { createStateMachineService } from "../StateMachine";
+import { createStateMachineService } from "./StateMachine";
 import { createDefaultWorld, getEntityQueryFromDesc } from "../entities";
 import {
   addComponentsToEntitiesByQuery,

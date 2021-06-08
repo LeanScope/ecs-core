@@ -14,6 +14,8 @@ import {
 } from "./systems/BasicTestSystem";
 import { createEventBasedTestSystem } from "./systems/EventBasedTestSystem";
 import ecs from "../index";
+import { createCreateEntitiesSystem } from "./systems/CreateEntitiesSystem";
+import { getEntityQueryFromDesc } from "../modules/entities";
 
 describe("Test System functions", () => {
   let world: World;
@@ -580,5 +582,74 @@ describe("Test System functions", () => {
         done();
       }
     }, 500);
+  });
+
+  it("Should add entities at initalization of system", () => {
+    let testSystemGroup = ecs.createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = ecs.addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createCreateEntitiesSystem({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    ecs.initSystems({ world });
+
+    const query = getEntityQueryFromDesc({
+      entityManager: world.entityManager,
+      queryDesc: { all: [{ type: "InitEntityComponent" }] },
+    });
+
+    const entities = ecs.toEntitiesArray({
+      entityQuery: query,
+    });
+
+    expect(entities.length).toBe(1);
+    expect(entities[0].components.length).toBe(1);
+    expect(entities[0].components[0].type).toBe("InitEntityComponent");
+  });
+
+  it("Should add entities with each update", () => {
+    let testSystemGroup = ecs.createSystemGroup({
+      callerId: world.callerId,
+      systemsService: world.systemsService,
+    });
+
+    testSystemGroup = ecs.addSystemToUpdateList({
+      group: testSystemGroup,
+      system: createCreateEntitiesSystem({
+        callerId: world.callerId,
+        entityManager: world.entityManager,
+      }),
+    });
+
+    world.systemGroups.push(testSystemGroup);
+
+    ecs.initSystems({ world });
+    for (let i = 0; i < 25; i++) {
+      ecs.updateAllSystems({ world });
+    }
+
+    const query = getEntityQueryFromDesc({
+      entityManager: world.entityManager,
+      queryDesc: { all: [{ type: "UpdateEntityComponent" }] },
+    });
+
+    const entities = ecs.toEntitiesArray({
+      entityQuery: query,
+    });
+
+    expect(entities.length).toBe(25);
+    for (let entity of entities) {
+      expect(entity.components.length).toBe(1);
+      expect(entity.components[0].type).toBe("UpdateEntityComponent");
+    }
   });
 });

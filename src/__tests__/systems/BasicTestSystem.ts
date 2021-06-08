@@ -12,7 +12,7 @@ import {
   getEntityQueryFromDesc,
   toEntitiesArray,
 } from "../../modules/entities";
-import { createStateMachineService } from "../../modules/StateMachine";
+import { createStateMachineService } from "../../modules/systems/StateMachine";
 import { createSystemMachineConfig } from "../../modules/systems";
 import {
   TestComponent,

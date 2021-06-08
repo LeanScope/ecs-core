@@ -3,7 +3,6 @@ import {
   AddComponentInputProps,
   AddComponentOutputProps,
   IComponent,
-  IComponentType,
 } from "../../model/components";
 import {
   CreateEntityInputProps,
@@ -11,13 +10,10 @@ import {
   EntityDescriptionInputProps,
   EntityDescriptionOutputProps,
   EntityManager,
-  EntityQuery,
   EntityQueryBase,
 } from "../../model/entities";
 import { EventType } from "../../model/EventType";
-import { Base64 } from "js-base64";
 import { v4 as uuid } from "uuid";
-import { Component } from "react";
 
 export function createEntity(props: CreateEntityInputProps): Entity {
   const guid = uuid();

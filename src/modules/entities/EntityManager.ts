@@ -10,7 +10,7 @@ import {
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
 import { authLink, link } from "../../api/Graph-ql.client";
-import { createStateMachineService } from "../StateMachine";
+import { createStateMachineService } from "../systems/StateMachine";
 import { createUniversalEntityQuery } from "./EntityQueries";
 
 export function createEntityManager(

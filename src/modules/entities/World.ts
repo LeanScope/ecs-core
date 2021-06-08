@@ -9,7 +9,7 @@ import {
   SystemEvent,
   SystemGroup,
 } from "../../model/systems";
-import { createStateMachineService } from "../StateMachine";
+import { createStateMachineService } from "../systems/StateMachine";
 import {
   createComponentSystemGroup,
   createInteractionSystemGroup,

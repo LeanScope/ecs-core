@@ -19,7 +19,7 @@ import {
   toEntitiesArray,
   setEntitiesArray,
 } from "./Entities";
-import { createStateMachineService } from "../StateMachine";
+import { createStateMachineService } from "../systems/StateMachine";
 
 export function getEntityQueryFromDesc(
   props: EntityQueryFromDescProps
@@ -135,9 +135,17 @@ export function createUniversalEntityQuery(
           [EventType.ENTITIES_PERSISTED]: {
             target: StateName.idle,
           },
-        }
+        },
       },
       fetchingSolutionSpaceEntities: {
+        entry: [
+          assign({
+            entities: (context, event) => {
+              return context.entities;
+            },
+          }),
+        ],
+        always: [StateName.idle],
         invoke: {
           id: "fetchingSolutionSpaceEntities",
           src: fetchSolutionSpaceEntities,
@@ -334,7 +342,7 @@ function createEntityQuery(props: EntityQueryCreationProps): EntityQuery {
         },
       },
       updating: {
-        always: StateName.idle
+        always: StateName.idle,
       },
     },
   });

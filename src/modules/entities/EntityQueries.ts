@@ -137,6 +137,28 @@ export function createUniversalEntityQuery(
           },
         },
       },
+      persistingDuringFetching: {
+        entry: [
+          (_context, event: any) => {
+            props.apolloClient.writeQuery({
+              query: gql(props.solutionSpaceQueryString),
+              data: {
+                entities: event.entities,
+              },
+            });
+            return event.entities;
+          },
+          send({
+            type: EventType.ENTITIES_PERSISTED,
+            callerId: key,
+          }),
+        ],
+        on: {
+          [EventType.ENTITIES_PERSISTED]: {
+            target: StateName.fetchingSolutionSpaceEntities,
+          },
+        },
+      },
       fetchingSolutionSpaceEntities: {
         entry: [
           assign({
@@ -145,7 +167,24 @@ export function createUniversalEntityQuery(
             },
           }),
         ],
-        always: [StateName.idle],
+        on: {
+          [EventType.WRITE_QUERY_SYNC]: {
+            target: StateName.persistingDuringFetching,
+            actions: [
+              assign({
+                entities: (_context, event) => {
+                  return event.entities;
+                },
+              }),
+              () => {
+                props.entityManagerService.send({
+                  type: EventType.ENTITIES_WRITTEN,
+                  callerId: key,
+                });
+              },
+            ],
+          },
+        },
         invoke: {
           id: "fetchingSolutionSpaceEntities",
           src: fetchSolutionSpaceEntities,
@@ -155,12 +194,6 @@ export function createUniversalEntityQuery(
           onDone: {
             target: StateName.idle,
             actions: [
-              (_context, event) => {
-                /* console.info(
-                  "Async response from " +
-                    ArchitectureActorType.UniversalEntityQuery
-                ); */
-              },
               assign({
                 entities: (context, _event) => {
                   /* console.info("Response from fetching solution entities"); */

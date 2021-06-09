@@ -9,4 +9,5 @@ export enum StateName {
   fetchingProblemSpaceEntities = "fetchingProblemSpaceEntities",
   fetchingSolutionSpaceEntities = "fetchingSolutionSpaceEntities",
   running = "running",
+  persistingDuringFetching = "persistingDuringFetching",
 }

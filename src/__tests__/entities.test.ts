@@ -8,7 +8,6 @@ describe("Testing Entity functions", () => {
   beforeEach(() => {
     world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
-      name: ArchitectureActorType.World,
       problemSpace: {
         gitLabProjectId: 207,
       },

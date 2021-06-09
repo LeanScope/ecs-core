@@ -40,7 +40,7 @@ import {
   User,
   Tag,
   inputActionMapJson,
-} from "../components";
+} from "../components/index";
 import {
   Entity,
   EntityManager,

@@ -3,17 +3,11 @@ import { ArchitectureActorType } from "../../model/architecture";
 import { World, WorldContext, WorldCreationProps } from "../../model/entities";
 import { EventType } from "../../model/EventType";
 import { StateName } from "../../model/StateName";
-import {
-  System,
-  SystemContext,
-  SystemEvent,
-  SystemGroup,
-} from "../../model/systems";
+import { System, SystemEvent, SystemGroup } from "../../model/systems";
 import { createStateMachineService } from "../systems/StateMachine";
 import {
   createComponentSystemGroup,
   createInteractionSystemGroup,
-  updateSystem,
 } from "../systems";
 import { createEntityManager } from "./EntityManager";
 import {
@@ -30,7 +24,7 @@ export function createDefaultWorld(props: WorldCreationProps): World {
   const type = ArchitectureActorType.World;
   const sessionGuid = uuid();
 
-  const callerId = props.name;
+  const callerId = props.callerId ? props.callerId : ArchitectureActorType.App;
   let systemGroups: SystemGroup[] = [];
 
   const machine = Machine<WorldContext, any, SystemEvent>({
@@ -72,6 +66,9 @@ export function createDefaultWorld(props: WorldCreationProps): World {
         on: {
           [EventType.START_UPDATE_SYSTEM]: {
             target: StateName.updating,
+          },
+          [EventType.START_RUN_SYSTEM]: {
+            target: StateName.initializing,
           },
         },
       },
@@ -175,7 +172,6 @@ export function createDefaultWorld(props: WorldCreationProps): World {
 
   return {
     callerId: callerId,
-    name: props.name,
     systemsService: systemsService,
     sessionGuid: sessionGuid,
     problemSpace: props.problemSpace,

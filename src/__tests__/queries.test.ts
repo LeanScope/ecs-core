@@ -15,7 +15,6 @@ describe("Test Entity Queries with 'all'", () => {
   beforeEach(() => {
     world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
-      name: ArchitectureActorType.World,
       problemSpace: {
         gitLabProjectId: 207,
       },
@@ -148,7 +147,6 @@ describe("Test Entity Queries with 'any'", () => {
   beforeEach(() => {
     world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
-      name: ArchitectureActorType.World,
       problemSpace: {
         gitLabProjectId: 207,
       },
@@ -169,7 +167,6 @@ describe("Test Entity Queries with 'none'", () => {
   beforeEach(() => {
     world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
-      name: ArchitectureActorType.World,
       problemSpace: {
         gitLabProjectId: 207,
       },
@@ -263,7 +260,6 @@ describe("Test entity Queries with combined descriptors", () => {
   beforeEach(() => {
     world = ecs.createDefaultWorld({
       callerId: ArchitectureActorType.App,
-      name: ArchitectureActorType.World,
       problemSpace: {
         gitLabProjectId: 207,
       },

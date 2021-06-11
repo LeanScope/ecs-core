@@ -6,12 +6,12 @@ import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 
 const httpLink = createHttpLink({
-  uri: "https://dev.api.leanscope.io/graphql",
+  uri: "http://localhost/",
 });
 
 // Create a WebSocket link:
 const websocketLink = new WebSocketLink({
-  uri: `wss://dev.api.leanscope.io/graphql`,
+  uri: "wss://localhost/graphql",
   options: {
     reconnect: true,
   },
@@ -36,7 +36,7 @@ export const authLink: any = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      userToken: "suPer$ecRetToken_Thomas",
+      userToken: "xxx",
     },
   };
 });
